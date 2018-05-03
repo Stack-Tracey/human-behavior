@@ -2,7 +2,7 @@ import socket
 import select
 import json
 
-TCP_IP = '172.18.101.69'
+TCP_IP = '172.18.101.206'
 TCP_PORT = 1337
 BUFFER_SIZE = 1
 MESSAGE = "Hello, World!"
@@ -10,7 +10,7 @@ MESSAGE = "Hello, World!"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 s.connect((TCP_IP, TCP_PORT))
-
+print()
 #s.settimeout(500)
 fr_rec = False
 byteA = bytearray()
