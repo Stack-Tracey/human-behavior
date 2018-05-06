@@ -1,6 +1,6 @@
 import socket
-import select
 import json
+
 
 class LabViewConnector:
     def __init__(self, ip, port):
@@ -10,7 +10,7 @@ class LabViewConnector:
     def receive_fr(self):
         byteA = bytearray()
         while True:
-            data = self.sock.recv(BUFFER_SIZE)
+            data = self.sock.recv(1)
             if data[0] == 10:
                 break
             else:
@@ -24,34 +24,5 @@ class LabViewConnector:
         str = json.dumps(obj).encode()
         self.sock.send(str)
 
-
-
-TCP_IP = '192.168.56.101'
-TCP_PORT = 1337
-BUFFER_SIZE = 1
-MESSAGE = "Hello, World!"
-
-s =
-
-
-print()
-#s.settimeout(500)
-fr_rec = False
-
-
-
-
-a = receive_fr(s)
-
-b = {}
-b['x'] = 5
-b['y'] = 10
-
-send_fr(s, b)
-print(str)
-
-
-print(a['X'])
-#s.send(byteA)
-print("a was send")
-s.close()
+    def close(self):
+        self.sock.close()

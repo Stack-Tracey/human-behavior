@@ -5,9 +5,9 @@ from queue import LifoQueue, Queue, PriorityQueue
 from timeit import default_timer as timer
 
 # Constants
-bound	= 'x'
-goal	= 'g'
-start	= 's'
+bound = 'x'
+goal = 'g'
+start = 's'
 searches = ["bfs","dfs","astar"]
 
 # Class
@@ -36,7 +36,7 @@ def searchFor(c,field):
 # Returns true if pos in field is a boundary
 # pos	- Position in field
 # field - Search space
-def isBound(pos,field):
+def isBound(pos, field):
 	return field[pos[0]][pos[1]] == bound
 
 # Returns true if pos in field is a Portal
