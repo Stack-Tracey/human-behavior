@@ -31,8 +31,13 @@ TCP_PORT = 1337
 BUFFER_SIZE = 1
 MESSAGE = "Hello, World!"
 
-s =
 
+while True:
+    a = receive_fr()
+    b = {'x' : 5} #placeholder for calculating stuff
+    con.send_fr(b)
+
+con.close()
 
 print()
 #s.settimeout(500)
@@ -41,7 +46,7 @@ fr_rec = False
 
 
 
-a = receive_fr(s)
+#a = receive_fr(s)
 
 b = {}
 b['x'] = 5
