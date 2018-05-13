@@ -26,7 +26,7 @@ def get_data(stream):
             print("package received")
             print(trial_def)
         elif msg_type == "Start":
-            #game.start(frame)
+            game.start(frame)
             print(frame)
         elif msg_type == "End":
             x = False
@@ -37,6 +37,7 @@ def get_data(stream):
             #b = game.response() # placeholder for calculating stuff
             #con.send_fr(b)
     get_data(stream)
+
 
 get_data(stream)
 print("package received:")
