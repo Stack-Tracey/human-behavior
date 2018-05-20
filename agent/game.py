@@ -1,7 +1,11 @@
+import graph
+#import time
 
 class Game:
     def __init__(self, frame):
         self.frame = frame
+        #self.trial_defs = list
+    global trial
 
 
     def response(self, frame):
@@ -18,52 +22,62 @@ class Game:
         return nr_of_trials
 
 
-    def trial_def(self, frame):
-        level_data = frame['Level Data']
-        print(level_data)
-        target_data = level_data['Targets']
-        print(target_data)
-        ball_data = level_data['Ball']
-        print(ball_data)
-        obstacle_data = level_data['Obstacles']
-        print("this works")
-        ai_type = level_data['AI Type']
-        show_bar = level_data['ShowBar']
-        nr_of_frames_to_skip_at_start = level_data['Nr_of_Frames_to_Skip_at_Start_of_Trial']
-        blink_wave_length_owg = level_data['Blink_Wavelength_OWG']
-        blink_wave_length_screen = level_data['Blink_Wavelength_Screen']
-        nr_of_targets = level_data['Nr of Targets']
-        nr_of_obstacles = level_data['Nr of Obstacles']
-        trial_duration_time = level_data['Trial Duration [ms]']
+    def trial_def(self, trial_defs):
+        nr_of_elements = trial_defs.__len__()
+        i = 0
+        print("trial_defs vom game")
+        print(trial_defs)
 
-        aI_length_of_memory = level_data['AI 1 Length of Memory']
-        screen_flicker_target_radius = level_data['Screen_Flicker_Target_Radius']
-        questionaire_text = level_data['Questionair Text']
-        show_fixiation_cross = level_data['Screen_Flicker_Target_Radius']
-        trial_type = level_data['Trial Type']
+        for element in trial_defs:
+            frame = element
+            print("test")
+            print(frame)
+            level_data = frame['Level Data']
+            target_data = level_data['Targets']
+            ball_data = level_data['Ball']
+            obstacle_data = level_data['Obstacles']
 
-        target_z = target_data['Z']
-        target_y = target_data['Y']
-        target_radius = target_data['Radius']
-        target_x = target_data['X']
-        target_z_size = target_data['Z_size']
+            ai_type = level_data['AI Type']
+            show_bar = level_data['ShowBar']
+            nr_of_frames_to_skip_at_start = level_data['Nr_of_Frames_to_Skip_at_Start_of_Trial']
+            blink_wave_length_owg = level_data['Blink_Wavelength_OWG']
+            blink_wave_length_screen = level_data['Blink_Wavelength_Screen'] #?
+            nr_of_targets = level_data['Nr of Targets']
+            nr_of_obstacles = level_data['Nr of Obstacles']
+            trial_duration_time = level_data['Trial Duration [ms]']
+            aI_length_of_memory = level_data['AI 1 Length of Memory']
+            screen_flicker_target_radius = level_data['Screen_Flicker_Target_Radius']
+            questionaire_text = level_data['Questionair Text']
+            show_fixiation_cross = level_data['Screen_Flicker_Target_Radius']
+            trial_type = level_data['Trial Type']
 
-        obs_x_size = obstacle_data['X_size']
-        obs_y_size = obstacle_data['Y_size']
-        obs_slowdown_fac = obstacle_data['slowdown factor']
-        obs_visibility = obstacle_data['visibility']
-        obs_z = obstacle_data['Z']
-        obs_y = obstacle_data['Y']
-        obs_z_size = obstacle_data['Z_size']
-        obs_geometric_type = obstacle_data['geometric type']
-        obs_z_angle_deg = obstacle_data['Z_angle_deg']
+            target_z = target_data['Z']
+            target_y = target_data['Y']
+            target_x = target_data['X']
+            target_radius = target_data['Radius']
+            target_z_size = target_data['Z_size']
 
-        ball_z = ball_data['Z']
-        ball_y = ball_data['Y']
-        ball_radius = ball_data['Radius']
-        ball_x = ball_data['X']
+            obs_x = obstacle_data['X']
+            obs_y = obstacle_data['Y']
+            obs_z = obstacle_data['Z']
+            obs_x_size = obstacle_data['X_size']
+            obs_y_size = obstacle_data['Y_size']
+            obs_z_size = obstacle_data['Z_size']
+            obs_z_angle_deg = obstacle_data['Z_angle_deg']
+            obs_slowdown_fac = obstacle_data['slowdown factor']
+            obs_visibility = obstacle_data['visibility']
+            obs_geometric_type = obstacle_data['geometric type']
 
-        return None
+            ball_x = ball_data['X']
+            ball_y = ball_data['Y']
+            ball_z = ball_data['Z']
+            ball_radius = ball_data['Radius']
+
+            trial = graph.Graph(obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac,
+                          obs_visibility, obs_geometric_type,
+                          target_x, target_y, target_z, target_z_size, target_radius, ball_x, ball_y, ball_z,
+                          ball_radius, nr_of_targets)
+            #time.sleep(10)#trial_duration_time+ trial.pause() trial_elapsed could be used in a help funktion,
 
 
     def play(self, frame):
@@ -86,6 +100,9 @@ class Game:
         p2_y = frame_data["Player 2"]['Y']
         #field.move(p1_f_x, p1_x, p1_y)
 
+        # graph.obstacles(obs_x, obs_y, obs_z, obs_slowdown_fac, obs_visibility)
+        # graph.targets(target_x, target_y, target_z)
+        # graph.ball(ball_x, ball_y, ball_z)
         return ode_processed_until
 
 
