@@ -1,87 +1,76 @@
-import graph
-#import time
+import trialState
 
 class Game:
     def __init__(self, frame):
         self.frame = frame
-        #self.trial_defs = list
-    global trial
-
+        self.trial = None
 
     def response(self, frame):
         return None
-
 
     def stop(self, frame):
         return None
         #exec.stop
 
-
     def experiment_def(self, frame):
         nr_of_trials = frame["Nr_of_Trials"]
+
         return nr_of_trials
 
+    #initialises the game state
+    def trial_def(self, frame):
+        print("reached trial_def")
+        print(frame)
 
-    def trial_def(self, trial_defs):
-        nr_of_elements = trial_defs.__len__()
-        i = 0
-        print("trial_defs vom game")
-        print(trial_defs)
+        level_data = frame['Level Data']
+        target_data = level_data['Targets']
+        ball_data = level_data['Ball']
+        obstacle_data = level_data['Obstacles']
 
-        for element in trial_defs:
-            frame = element
-            print("test")
-            print(frame)
-            level_data = frame['Level Data']
-            target_data = level_data['Targets']
-            ball_data = level_data['Ball']
-            obstacle_data = level_data['Obstacles']
+        ai_type = level_data['AI Type']
+        show_bar = level_data['ShowBar']
+        nr_of_frames_to_skip_at_start = level_data['Nr_of_Frames_to_Skip_at_Start_of_Trial']
+        blink_wave_length_owg = level_data['Blink_Wavelength_OWG']
+        blink_wave_length_screen = level_data['Blink_Wavelength_Screen'] #?
+        nr_of_targets = level_data['Nr of Targets']
+        nr_of_obstacles = level_data['Nr of Obstacles']
+        trial_duration_time = level_data['Trial Duration [ms]'] #60000 ms
+        aI_length_of_memory = level_data['AI 1 Length of Memory']
+        screen_flicker_target_radius = level_data['Screen_Flicker_Target_Radius']
+        questionaire_text = level_data['Questionair Text']
+        show_fixiation_cross = level_data['Screen_Flicker_Target_Radius']
+        trial_type = level_data['Trial Type']
 
-            ai_type = level_data['AI Type']
-            show_bar = level_data['ShowBar']
-            nr_of_frames_to_skip_at_start = level_data['Nr_of_Frames_to_Skip_at_Start_of_Trial']
-            blink_wave_length_owg = level_data['Blink_Wavelength_OWG']
-            blink_wave_length_screen = level_data['Blink_Wavelength_Screen'] #?
-            nr_of_targets = level_data['Nr of Targets']
-            nr_of_obstacles = level_data['Nr of Obstacles']
-            trial_duration_time = level_data['Trial Duration [ms]']
-            aI_length_of_memory = level_data['AI 1 Length of Memory']
-            screen_flicker_target_radius = level_data['Screen_Flicker_Target_Radius']
-            questionaire_text = level_data['Questionair Text']
-            show_fixiation_cross = level_data['Screen_Flicker_Target_Radius']
-            trial_type = level_data['Trial Type']
+        tar_z = target_data['Z']
+        tar_y = target_data['Y']
+        tar_x = target_data['X']
+        tar_radius = target_data['Radius']
+        tar_z_size = target_data['Z_size']
 
-            target_z = target_data['Z']
-            target_y = target_data['Y']
-            target_x = target_data['X']
-            target_radius = target_data['Radius']
-            target_z_size = target_data['Z_size']
+        obs_x = obstacle_data['X']
+        obs_y = obstacle_data['Y']
+        obs_z = obstacle_data['Z']
+        obs_x_size = obstacle_data['X_size']
+        obs_y_size = obstacle_data['Y_size']
+        obs_z_size = obstacle_data['Z_size']
+        obs_z_angle_deg = obstacle_data['Z_angle_deg']
+        obs_slowdown_fac = obstacle_data['slowdown factor']
+        obs_visibility = obstacle_data['visibility']
+        obs_geometric_type = obstacle_data['geometric type']
 
-            obs_x = obstacle_data['X']
-            obs_y = obstacle_data['Y']
-            obs_z = obstacle_data['Z']
-            obs_x_size = obstacle_data['X_size']
-            obs_y_size = obstacle_data['Y_size']
-            obs_z_size = obstacle_data['Z_size']
-            obs_z_angle_deg = obstacle_data['Z_angle_deg']
-            obs_slowdown_fac = obstacle_data['slowdown factor']
-            obs_visibility = obstacle_data['visibility']
-            obs_geometric_type = obstacle_data['geometric type']
+        ball_x = ball_data['X']
+        ball_y = ball_data['Y']
+        ball_z = ball_data['Z']
+        ball_radius = ball_data['Radius']
 
-            ball_x = ball_data['X']
-            ball_y = ball_data['Y']
-            ball_z = ball_data['Z']
-            ball_radius = ball_data['Radius']
-
-            trial = graph.Graph(obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac,
-                          obs_visibility, obs_geometric_type,
-                          target_x, target_y, target_z, target_z_size, target_radius, ball_x, ball_y, ball_z,
-                          ball_radius, nr_of_targets)
-            #time.sleep(10)#trial_duration_time+ trial.pause() trial_elapsed could be used in a help funktion,
-
+        self.trial = trialState.TrialState(obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg,
+                                           obs_slowdown_fac, obs_visibility, obs_geometric_type, tar_x, tar_y, tar_z,
+                                           tar_z_size, tar_radius, ball_x, ball_y, ball_z, ball_radius, nr_of_targets,
+                                           nr_of_obstacles)
 
     def play(self, frame):
         frame_data = frame["Frame Data"]
+
         trigger_state = frame_data['Trigger State']
         start_last_frame = frame_data['Last Frame Start [ms]']
         p1_norm_avg_x = frame_data["Player 1"]['norm_avg_x']
@@ -99,12 +88,6 @@ class Game:
         p2_f_x = frame_data["Player 2"]['F_y']
         p2_y = frame_data["Player 2"]['Y']
         #field.move(p1_f_x, p1_x, p1_y)
-
-        # graph.obstacles(obs_x, obs_y, obs_z, obs_slowdown_fac, obs_visibility)
-        # graph.targets(target_x, target_y, target_z)
-        # graph.ball(ball_x, ball_y, ball_z)
-        return ode_processed_until
-
 
     def start(self, frame):
         return None
