@@ -16,7 +16,7 @@ def get_data(stream):
         frame = stream.receive_fr()
         msg_type = frame["MsgType"]
 
-        if msg_type == "Frame" and frame['Frame Data']['Frame Nr.'] != 0:
+        if msg_type == "Frame":
             game.play(frame)
             play.append(frame)
             #print("package received")
