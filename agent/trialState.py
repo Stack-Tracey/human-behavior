@@ -40,10 +40,10 @@ class TrialState:
                 x_size_val = obs_x_size[i]
                 y_size_val = obs_y_size[i]
                 z_size_val = obs_z_size[i]
-                angle_deg_val = obs_z_angle_deg
+                angle_deg_val = obs_z_angle_deg[i]
                 slowdown_fac_val = obs_slowdown_fac[i]
-                visible_fac = visibility
-                geometric_type_val = geometric_type
+                visible_fac = visibility[i]
+                geometric_type_val = geometric_type[i]
                 print("here comes single vaalues", x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val,visible_fac, geometric_type_val)
 
                 obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
