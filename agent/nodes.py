@@ -1,7 +1,7 @@
 
 import numpy as np
 from scipy import ndimage
-
+np.set_printoptions(threshold=np.inf)
 
 class Nodes:
     def __init__(self, obstacles, targets, ball):
@@ -12,7 +12,7 @@ class Nodes:
         self.field_y_size = 770
         self.field_z_size = 500
         self.tile_size = self.field_x_size / 4
-        self.field_filled = np.zeros([self.field_x_size, self.field_y_size])
+        self.field_filled = np.zeros([self.field_x_size, self.field_y_size], dtype=object)
         self.obs_trans = []
 
         ###Calculates the bounding box of a ndarray
@@ -20,16 +20,16 @@ class Nodes:
             mask = x == 0
             bbox = []
             all_axis = np.arange(x.ndim)
-            print("all_axis", all_axis)
+            #print("all_axis", all_axis)
             for kdim in all_axis:
                 nk_dim = np.delete(all_axis, kdim)
-                print("nk_dim", nk_dim)
+                #print("nk_dim", nk_dim)
                 mask_i = mask.all(axis=tuple(nk_dim))
-                print("mask_i", mask_i)
+                #print("mask_i", mask_i)
                 dmask_i = np.diff(mask_i)
-                print("dmask", dmask_i)
+                #print("dmask", dmask_i)
                 idx_i = np.nonzero(dmask_i)[0]
-                print("idx_i", idx_i)
+                #print("idx_i", idx_i)
                 if len(idx_i) != 2:
                     raise ValueError('Algorithm failed, {} does not have 2 elements!'.format(idx_i))
                 bbox.append(slice(idx_i[0] + 1, idx_i[1] + 1))
@@ -45,7 +45,7 @@ class Nodes:
                 val = []
                 field = np.zeros([self.field_x_size, self.field_y_size])
                 field2 = np.zeros([self.field_x_size, self.field_y_size])
-                marker = 0 #
+                marker = 0.
                 if len(obj) < 7:
                     x, y, z, z_size, radius, amount = obj
                     radius = radius[0] / 2
@@ -119,6 +119,7 @@ class Nodes:
                 idx_max.append(max_y_cent)
 
                 i = 0
+                print("here comes marker", marker)
                 for x in idx_max[0]:
                     y = idx_max[1][i]
                     field2[x, y] = marker
@@ -131,11 +132,13 @@ class Nodes:
                 j = j + 1
             return nodes
 
+        print("here is field_filled")
+        self.tar_nodes = get_nodes(self, self.targets)
+        print((self.field_filled != 0).astype(int))
         self.obs_nodes = get_nodes(self, self.obstacles)
         print("here is the node list obstacles", self.obs_nodes)
-        self.tar_nodes = get_nodes(self, self.targets)
         print("here is the node list targets", self.tar_nodes)
-        print("here is field_filled", self.field_filled.astype(int))
-        print((self.field_filled != 0).astype(int))
+
+
 
 
