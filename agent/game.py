@@ -1,9 +1,13 @@
 import trialState
+import aStar
 
 class Game:
     def __init__(self, frame):
         self.frame = frame
         self.trial = None
+        self.obstacles = None
+        self.targets = None
+        self.ball_pos = None
 
     def response(self, frame):
         return None
@@ -19,8 +23,6 @@ class Game:
 
     #initialises the game state
     def trial_def(self, frame):
-        print("reached trial_def")
-        print(frame)
 
         level_data = frame['Level Data']
         target_data = level_data['Targets']
@@ -67,6 +69,9 @@ class Game:
                                            obs_slowdown_fac, obs_visibility, obs_geometric_type, tar_x, tar_y, tar_z,
                                            tar_z_size, tar_radius, ball_x, ball_y, ball_z, ball_radius, nr_of_targets,
                                            nr_of_obstacles)
+        self.obstacles = self.trial.obs_nodes #
+        self.targets = self.trial.tar_nodes #
+        self.ball_pos = self.trial.ball #
 
     def play(self, frame):
         frame_data = frame["Frame Data"]

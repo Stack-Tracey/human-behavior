@@ -1,4 +1,4 @@
-import graph
+import nodes
 
 class TrialState:
     def __init__(self, obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac,
@@ -44,13 +44,11 @@ class TrialState:
                 slowdown_fac_val = obs_slowdown_fac[i]
                 visible_fac = visibility[i]
                 geometric_type_val = geometric_type[i]
-                print("here comes single vaalues", x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val,visible_fac, geometric_type_val)
 
                 obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
                 obstacles.append(obs)
 
                 i = i + 1
-                print("here comes obstacles", obstacles)
             return obstacles
 
         #returns the positions of targets. Each Element in output-list has the same order as method call
@@ -97,11 +95,13 @@ class TrialState:
                                        self.obs_visibility, self.obs_geometric_type)
         self.targets = get_targets(tar_x, tar_y, tar_z, tar_z_size, tar_radius, nr_of_targets)
         self.ball = get_start_ball(ball_x, ball_y, ball_z, ball_radius)
-        print("overhanded obstacles", self.obstacles)
-        self.graph = graph.Graph(self.obstacles, self.targets, self.ball)
+        self.nodes = nodes.Nodes(self.obstacles, self.targets, self.ball)
+        self.obs_nodes = self.nodes.obs_nodes #
+        self.tar_nodes = self.nodes.tar_nodes #
 
     def pause(self, val):
         print(val)
+
 
 
 
