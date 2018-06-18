@@ -22,6 +22,7 @@ class LabViewConnector:
 
     def send_fr(self, obj):
         str = json.dumps(obj).encode()
+        print(str)
         self.sock.send(str)
 
     def close(self):
