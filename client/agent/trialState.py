@@ -1,4 +1,4 @@
-import nodes
+from client.agent import nodes
 
 class TrialState:
     def __init__(self, obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac,

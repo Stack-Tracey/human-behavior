@@ -1,8 +1,6 @@
 import labViewConnector
-import game
-import time
-
-stream = labViewConnector.LabViewConnector('192.168.56.101', 1337)
+from client.agent import game
+stream = labViewConnector.LabViewConnector('192.168.56.101', 1337) #''172.18.101.69'
 game = game.Game(stream)
 
 def get_data(stream):
@@ -14,6 +12,8 @@ def get_data(stream):
         if msg_type == "Frame":
             response = game.play(frame)
             stream.send_fr(response)
+            #stream.send_fr(\\r)
+            #stream.send_fr(\\n)
 
         elif msg_type == "Experiment Definition":
             game.experiment_def(frame)

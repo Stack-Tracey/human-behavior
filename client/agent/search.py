@@ -17,7 +17,6 @@ class Search:
 
 
     def heuristic(self, a, b):
-        print("reached heuristik")
         return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
 
 
@@ -29,9 +28,7 @@ class Search:
         gscore = {start: 0}
         fscore = {start: self.heuristic(start, goal)}
         oheap = []
-        print("here comes fscore from astar", fscore)
         heappush(oheap, (fscore[start], start))
-        print("here comes oheap", oheap)
 
         while oheap:
             current = heappop(oheap)[1]
@@ -71,13 +68,12 @@ class Search:
 
     def go_for_target(self, ball_pos):
         x, y = ball_pos
-        print("here comes x, y", x, y)
+        print("here comes targets", self.targets)
         tree = spatial.KDTree(self.targets)
         index = tree.query([(x, y)])[1][0]
 
         goal = self.targets[index]
         resp = self.astar(self.field, ball_pos, goal)
-        print("here comes resp", resp)
+
         return resp
-        #astar(array, start, goal)
 

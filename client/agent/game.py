@@ -1,5 +1,5 @@
-import trialState
-import search
+from client.agent import trialState
+from client.agent import search
 from scipy import spatial
 
 class Game:
@@ -111,20 +111,20 @@ class Game:
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
 
-        #x = p1_x
-        #y = p1_y
+        x = p1_x
+        y = p1_y
 
-        pos = (p1_x, p1_y)
-        if not self.path:
-            self.path = self.search.go_for_target((p1_x, p2_y))
-        x, y = self.path.pop()
-
-        #if x < 1024:
-        #    x = x + 1
-        #elif y < 768:
-        #    y = y + 1
-
-        response = {'X': x, 'Y': y}
+        if x < 1025:
+            x = x + 1
+            if y < 700:
+                y = y + 1
+        else:
+            x = 50
+            y = 50
+        print("Here comes player 1", p1_x, p1_y)
+        a = chr(13)
+        b = chr(10)
+        response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
 

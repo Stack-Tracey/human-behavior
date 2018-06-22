@@ -94,3 +94,11 @@ print(b)
 print(b.pop())
 print(b.pop())
 print(b)
+
+if not self.path:
+    self.path = self.search.go_for_target((p1_x, p1_y))
+if not self.path:
+    x, y = p1_x, p1_y
+    print("here somes p1 x p1 y", p1_x, p1_y)
+else:
+    x, y = self.path.pop()
