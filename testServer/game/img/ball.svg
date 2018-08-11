@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="ball.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.7800781"
+     inkscape:cx="353.42284"
+     inkscape:cy="535.5063"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1341"
+     inkscape:window-height="750"
+     inkscape:window-x="25"
+     inkscape:window-y="18"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g6773"
+       inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png"
+       inkscape:export-xdpi="182"
+       inkscape:export-ydpi="182">
+      <circle
+         inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png"
+         inkscape:export-ydpi="182.246"
+         inkscape:export-xdpi="182.246"
+         r="29.630287"
+         cy="548.41223"
+         cx="332.52142"
+         id="path3336"
+         style="opacity:1;fill:#00ccff;stroke-width:0.88749999;stroke-miterlimit:4;stroke-dasharray:none" />
+      <circle
+         inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png"
+         inkscape:export-ydpi="182.246"
+         inkscape:export-xdpi="182.246"
+         r="22.327236"
+         cy="547.85046"
+         cx="331.95966"
+         id="circle6767"
+         style="opacity:1;fill:#55ddff;stroke-width:0.88749999;stroke-miterlimit:4;stroke-dasharray:none" />
+      <circle
+         style="opacity:1;fill:#00ffff;stroke-width:0.88749999;stroke-miterlimit:4;stroke-dasharray:none"
+         id="circle6765"
+         cx="330.83609"
+         cy="546.72693"
+         r="8.8446817"
+         inkscape:export-xdpi="182.246"
+         inkscape:export-ydpi="182.246"
+         inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png" />
+      <circle
+         style="opacity:1;fill:#80e5ff;stroke-width:0.88749999;stroke-miterlimit:4;stroke-dasharray:none"
+         id="circle6769"
+         cx="331.39789"
+         cy="547.2887"
+         r="12.777094"
+         inkscape:export-xdpi="182.246"
+         inkscape:export-ydpi="182.246"
+         inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png" />
+      <circle
+         inkscape:export-filename="/home/mel/Projects/uni/BA/human-behavior/testServer/game/img/ball.png"
+         inkscape:export-ydpi="182.246"
+         inkscape:export-xdpi="182.246"
+         r="6.0358167"
+         cy="545.04163"
+         cx="334.76849"
+         id="circle6771"
+         style="opacity:1;fill:#d5f6ff;stroke-width:0.88749999;stroke-miterlimit:4;stroke-dasharray:none" />
+    </g>
+  </g>
+</svg>

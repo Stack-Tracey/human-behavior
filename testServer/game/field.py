@@ -1,13 +1,14 @@
-#!python
-# coding: utf8
-
 import pygame
+import random
 from pygame.locals import *
 
 
 def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(name)
+        if name == "img/obstacle.png" and random.randint(0, 10) % 2==0:
+            image = pygame.transform.rotate(image, 90)
+
     except pygame.error:
         print('Cannot load image:', name)
         raise SystemExit
@@ -79,14 +80,14 @@ def main():
     all_sprites = pygame.sprite.Group()
     targets = pygame.sprite.Group()
     obstacles = pygame.sprite.Group()
-    player = Player((500, 500))
+    player = Player((500, 550))
     all_sprites.add(player)
 
-    for pos in ((172, 133),(710, 659),(300, 407),(900, 48)):
+    for pos in ((172, 133),(710, 659),(300, 407),(950, 200)):
         c = Target(pos)
         all_sprites.add(c)
         targets.add(c)
-    for pos in ((61, 324),(124, 202),(615, 194),(866, 102),(152, 601),(961, 706),(600, 302),(300, 31),(789, 500)):
+    for pos in ((388, 324),(124, 202),(615, 194),(866, 102),(230, 590),(961, 706),(570, 450),(300, 31),(820, 550)):
         b = Obstacle(pos)
         all_sprites.add(b)
         obstacles.add(b)
@@ -107,7 +108,7 @@ def main():
                     return
         for target in pygame.sprite.spritecollide(player, targets, True):
                 player.targets += 1
-        for obstacle in pygame.sprite.spritecollide(player, obstacles, True):
+        for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
                 player.targets -= 1
                 player.reset_position()
 
