@@ -89,6 +89,7 @@ class Game:
         self.path = self.search.go_for_target(self.trial.ball)
         print("here comes path", self.path)
 
+
     def play(self, frame):
         frame_data = frame["Frame Data"]
 
@@ -99,6 +100,7 @@ class Game:
         p1_y = frame_data["Player 1"]['Y']
 
         p2_norm_avg_x = frame_data["Player 2"]['norm_avg_x']
+        print("norm_avg_x", p1_norm_avg_x, "norm_avg_reshaped", p1_norm_avg_reshaped_y)
         p2_norm_avg_reshaped_y = frame_data["Player 2"]['norm avg_reshaped y']
         p2_x = frame_data["Player 2"]['X']
         p2_f_x = frame_data["Player 2"]['F_y']
@@ -111,29 +113,9 @@ class Game:
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
 
-        x = p1_x
-        y = p1_y
-
-        if x < 1025:
-            x = x + 1
-            if y < 700:
-                y = y + 1
-        else:
-            x = 50
-            y = 50
         print("Here comes player 1", p1_x, p1_y)
-        a = chr(13)
-        b = chr(10)
+        x, y = self.search.go_for_target((p1_x, p1_y))
+        print("Here comes response", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
-
-
-    #ball_x, ball_y, ball_z, ball_radius = ball_pos
-    #start = (ball_x, ball_y)
-    #tar_tup = self.trial.targets_tup
-    #tree = spatial.KDTree(tar_tup)
-    #index = tree.query([(ball_x, ball_y)])[1][0]
-    #goal = tar_tup[index]
-    #astar(self.field_filled, start, goal)
-

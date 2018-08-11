@@ -22,7 +22,7 @@ class Search:
 
     def astar(self, array, start, goal):
         neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-
+        print("reached astar", array, start, goal)
         close_set = set()
         came_from = {}
         gscore = {start: 0}
@@ -66,14 +66,36 @@ class Search:
 
         return False
 
+    def resp_normalized(self, start, goal):
+        x_s, y_s = start
+        x_g, y_g = goal
+        print(x_s, y_s, x_g, y_g)
+        x_r = x_g - x_s
+        y_r = y_g - y_s
+
+        m = abs(max(x_r, y_r))
+        print(m)
+        x_rn = x_r / m
+        y_rn = y_r / m
+
+        return x_rn, y_rn
+
     def go_for_target(self, ball_pos):
+
         x, y = ball_pos
         print("here comes targets", self.targets)
+        print("targets for spartial tree", self.targets)
         tree = spatial.KDTree(self.targets)
         index = tree.query([(x, y)])[1][0]
-
+        print("here comes tree, index", tree, index)
+        print("here comes ball_pos", ball_pos)
         goal = self.targets[index]
-        resp = self.astar(self.field, ball_pos, goal)
+        if ball_pos == goal:
+            return 0, 0
+        else:
+            path = self.astar(self.field, ball_pos, goal)
+            #print("here comes path, goal", path, goal)
+            x, y = self.resp_normalized(path.pop(), goal)
 
-        return resp
+            return x, y
 

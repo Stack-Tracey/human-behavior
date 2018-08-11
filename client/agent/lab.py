@@ -2,6 +2,50 @@ import numpy
 from heapq import *
 from scipy import spatial
 
+#bytearray(b'{"MsgType":"Frame",
+            # "Frame Data":{"dt [ms]":16,
+            #"Frame Nr.":118,
+            # "Trial Elapsed [ms]":18446744073709550797,
+            # "Trigger State":0,
+            # "Trial Start [ms]":7892594,
+            #"Last Frame Start [ms]":7891775,
+            # "ODE processed until [ms]":7891762,
+            #"Player 1":{"X":512,
+                        # "Y":384,
+                        #"F_x":0,
+                        # "F_y":0,
+                        # "norm_avg_x":NaN,
+                        # "norm avg y":NaN,
+                        # "norm_avg_reshaped_x":512,
+                        # "norm avg_reshaped y":384},
+            # "Player 2":{"X":512,"Y":384,"F_x":0,"F_y":0,"norm_avg_x":NaN,"norm avg y":NaN,"norm_avg_reshaped_x":0,"norm avg_reshaped y":0}}}\r')
+
+
+#1 - time start of frame
+#%       2 - time duration of frame
+#%       3 - bimetal deflection 'reshaped' X (norm_avrg_reshaped, i.e. after reshaping to 0.8 ==> 1)####### "norm_avg_reshaped_x":512,
+#%       4 - bimetal deflection 'reshaped' Y (norm_avrg_reshaped, i.e. after reshaping to 0.8 ==> 1)#######  "norm avg_reshaped y":384},
+#%       5 - X coordinate of ball ###### X
+#%       6 - Y coordinate of ball ###### Y
+#%       7 - X speed of ball
+#%       8 - Y speed of ball
+#%       9 - Obstacle hit, yes/no (1/0) - per frame
+#%       10 - Target hit, yes/no (1/0) - per frame   % ALWAYS 1 EXCEPT AT END OF THIS TRIAL's FRAMES
+#%       11 - Target hit, ID (1,2,3,4) - per frame
+#%       12 - Obstacle hit, yes/no (1/0) - collection events ONLY
+#%       13 - Target hit, yes/no (1/0) - collection events ONLY
+#%       14 - Target hit, ID (1,2,3,4) - collection events ONLY
+#%       15 - bimetal deflection 'raw' X (mean of AI_x_Samples)
+#%       16 - bimetal deflection 'raw' Y (mean of AI_y_Samples)
+#%       17 - bimetal deflection 'medium' X (norm_avrg, i.e. after calibration) ####### "norm_avg_reshaped_x":512,
+#%       18 - bimetal deflection 'medium' Y (norm_avrg, i.e. after calibration) ####### "norm avg y":NaN,
+#%       19 - X force on ball (Fx, considering influence of one or both players, dep. on trial type)
+#%       20 - Y force on ball (Fy, considering influence of one or both players, dep. on trial type)
+#%       21 - marker of especially good play
+#%       22 - 30: infos on unilateral obstacle visibility
+#%       31 - close-to-how-many-regions
+#%       32 - who_is_seeing (nobody = 0, P1 = 1, P2 = 2, both = 3)
+
 array = numpy.zeros([20, 20])
 array[4:8, 4:8] = 2
 array[12:16, 10:12] = 1
@@ -95,10 +139,32 @@ print(b.pop())
 print(b.pop())
 print(b)
 
-if not self.path:
-    self.path = self.search.go_for_target((p1_x, p1_y))
-if not self.path:
-    x, y = p1_x, p1_y
-    print("here somes p1 x p1 y", p1_x, p1_y)
-else:
-    x, y = self.path.pop()
+#if not self.path:
+   # self.path = self.search.go_for_target((p1_x, p1_y))
+#if not self.path:
+    #x, y = p1_x, p1_y
+   # print("here somes p1 x p1 y", p1_x, p1_y)
+#else:
+   # x, y = self.path.pop()
+
+start = (2, 1)
+goal = (5, 3)
+
+def resp_normalized(start, goal):
+    x_s, y_s = start
+    x_g, y_g = goal
+    print(x_s, y_s, x_g, y_g)
+    x_r = x_g - x_s
+    y_r = y_g - y_s
+
+    m = abs(max(x_r, y_r))
+    print(m)
+    x_rn = x_r / m
+    y_rn = y_r / m
+
+    return x_rn, y_rn
+
+a = resp_normalized((43, 498), (587, 13))
+b = resp_normalized((700, 1), (1, 700))
+c = resp_normalized((430, 689), (1200, 130))
+print(a, b, c)
