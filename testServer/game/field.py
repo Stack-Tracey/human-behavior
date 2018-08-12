@@ -3,6 +3,8 @@ import random
 from pygame.locals import *
 
 
+
+
 def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(name)
@@ -26,23 +28,25 @@ class Player(pygame.sprite.Sprite):
         self.image, self.rect  = load_image("img/ball.png", -1)
         self.rect.center = pos
         self.start_pos = pos
-        self.step_size = 10
+        self.speed = 4
         self.x = self.y = 0
         self.targets = 0
         self.screenrect = pygame.display.get_surface().get_rect()
+        self.wait = 0
+        self.tar = 0
 
     def update(self, events):
 
         for event in events:
                 if event.type == KEYDOWN:
                         if event.key == K_LEFT:
-                                self.x += -1 * self.step_size
+                                self.x += -1 * self.speed
                         elif event.key == K_RIGHT:
-                                self.x += 1 * self.step_size
+                                self.x += 1 * self.speed
                         elif event.key == K_UP:
-                                self.y += -1 * self.step_size
+                                self.y += -1 * self.speed
                         elif event.key == K_DOWN:
-                                self.y += 1 * self.step_size
+                                self.y += 1 * self.speed
                 elif event.type == KEYUP:
                         if event.key in (K_LEFT, K_RIGHT):
                                 self.x = 0
@@ -54,8 +58,7 @@ class Player(pygame.sprite.Sprite):
                 self.y = 0
         self.rect.move_ip(self.x, self.y)
 
-    def reset_position(self):
-            print("reset position reached in player")
+    def reset_position(self):#slowdown_ball(self):
             self.rect.center = self.start_pos
 
 class Target(pygame.sprite.Sprite):
@@ -83,14 +86,18 @@ def main():
     player = Player((500, 550))
     all_sprites.add(player)
 
-    for pos in ((172, 133),(710, 659),(300, 407),(950, 200)):
+
+
+
+    for pos in ((172, 133), (710, 659), (300, 407), (950, 200)):
         c = Target(pos)
         all_sprites.add(c)
         targets.add(c)
-    for pos in ((388, 324),(124, 202),(615, 194),(866, 102),(230, 590),(961, 706),(570, 450),(300, 31),(820, 550)):
+    for pos in ((388, 324), (124, 202), (615, 194), (866, 102), (230, 590), (961, 706), (570, 450), (300, 31), (820, 550)):
         b = Obstacle(pos)
         all_sprites.add(b)
         obstacles.add(b)
+
 
     while True:
         # maximal 40 fps
@@ -106,10 +113,20 @@ def main():
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     return
+
+
         for target in pygame.sprite.spritecollide(player, targets, True):
-                player.targets += 1
+            player.wait = 120
+            player.targets += 1
+            print("player targets", player.targets)
+        player.wait -= 1
+        #print("player wait", player.wait)
+        if player.wait == 0:
+            all_sprites.add(target)
+            targets.add(target)
+
         for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
-                player.targets -= 1
+                #player.targets -= 1
                 player.reset_position()
 
         # den Bildschirm mit einer Hintergrundfarbe füllen und so
