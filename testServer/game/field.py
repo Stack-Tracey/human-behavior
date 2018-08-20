@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pygame
 import random
 from pygame.locals import *
@@ -30,36 +31,55 @@ class Player(pygame.sprite.Sprite):
         self.start_pos = pos
         self.speed = 4
         self.x = self.y = 0
+        self.xv = self.yv = 0
         self.targets = 0
         self.screenrect = pygame.display.get_surface().get_rect()
         self.wait = 0
         self.tar = 0
 
     def update(self, events):
-
         for event in events:
                 if event.type == KEYDOWN:
                         if event.key == K_LEFT:
-                                self.x += -1 * self.speed
+                                self.xv += -1 * self.speed
                         elif event.key == K_RIGHT:
-                                self.x += 1 * self.speed
+                                self.xv += 1 * self.speed
                         elif event.key == K_UP:
-                                self.y += -1 * self.speed
+                                self.yv += -1 * self.speed
                         elif event.key == K_DOWN:
-                                self.y += 1 * self.speed
+                                self.yv += 1 * self.speed
                 elif event.type == KEYUP:
                         if event.key in (K_LEFT, K_RIGHT):
-                                self.x = 0
+                                self.x = self.x
                         elif event.key in (K_UP, K_DOWN):
-                                self.y = 0
+                                self.y = self.y
         if self.x and not self.screenrect.contains(self.rect.move(self.x, 0)):
                 self.x = 0
         if self.y and not self.screenrect.contains(self.rect.move(0, self.y)):
                 self.y = 0
-        self.rect.move_ip(self.x, self.y)
+        self.rect.move_ip(self.xv, self.yv)
+        self.xv = self.xv * 0.96
+        self.yv = self.yv * 0.96
 
-    def reset_position(self):#slowdown_ball(self):
-            self.rect.center = self.start_pos
+        if(self.rect.x < 0):
+            self.xv = self.xv * (-1)
+
+        if(self.rect.y < 0):
+            self.yv = self.yv * (-1)
+
+        if(self.rect.x > self.screenrect.width - self.rect.width):
+            self.xv = self.xv * (-1)
+
+        if(self.rect.y > self.screenrect.height - self.rect.height):
+            self.yv = self.yv * (-1)
+
+    def reset_position(self):
+        self.rect.center = self.start_pos
+        self.xv = self.yv = 0
+
+    def slowdown(self):
+        self.xv = self.xv * 0.9
+        self.yv = self.yv * 0.9
 
 class Target(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -127,7 +147,8 @@ def main():
 
         for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
                 #player.targets -= 1
-                player.reset_position()
+                #player.reset_position()
+            player.slowdown()
 
         # den Bildschirm mit einer Hintergrundfarbe füllen und so
         # gleichzeitig das alte Bild löschen
