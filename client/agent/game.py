@@ -100,7 +100,6 @@ class Game:
         p1_y = frame_data["Player 1"]['Y']
 
         p2_norm_avg_x = frame_data["Player 2"]['norm_avg_x']
-        print("norm_avg_x", p1_norm_avg_x, "norm_avg_reshaped", p1_norm_avg_reshaped_y)
         p2_norm_avg_reshaped_y = frame_data["Player 2"]['norm avg_reshaped y']
         p2_x = frame_data["Player 2"]['X']
         p2_f_x = frame_data["Player 2"]['F_y']
@@ -114,7 +113,9 @@ class Game:
         dt = frame_data['dt [ms]']
 
         print("Here comes player 1", p1_x, p1_y)
-        x, y = self.search.go_for_target((p1_x, p1_y))
+        print("Here comes player 2", p2_x, p2_y)
+
+        x, y = self.search.go_for_target((p2_x, p2_y))
         print("Here comes response", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 

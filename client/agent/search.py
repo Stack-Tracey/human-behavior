@@ -22,7 +22,7 @@ class Search:
 
     def astar(self, array, start, goal):
         neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-        print("reached astar", array, start, goal)
+        print("reached astar")
         close_set = set()
         came_from = {}
         gscore = {start: 0}
@@ -67,7 +67,10 @@ class Search:
         return False
 
     def resp_normalized(self, start, goal):
+        print("reached normalization")
+
         x_s, y_s = start
+        print("start values from normalization", x_s, y_s)
         x_g, y_g = goal
         print(x_s, y_s, x_g, y_g)
         x_r = x_g - x_s
@@ -81,20 +84,19 @@ class Search:
         return x_rn, y_rn
 
     def go_for_target(self, ball_pos):
-
+        print("reached go for target")
         x, y = ball_pos
-        print("here comes targets", self.targets)
-        print("targets for spartial tree", self.targets)
+        x = int(x) + 1
+        y = int(y) + 1
         tree = spatial.KDTree(self.targets)
         index = tree.query([(x, y)])[1][0]
-        print("here comes tree, index", tree, index)
-        print("here comes ball_pos", ball_pos)
         goal = self.targets[index]
         if ball_pos == goal:
             return 0, 0
         else:
-            path = self.astar(self.field, ball_pos, goal)
-            #print("here comes path, goal", path, goal)
+            print("here comes astar params", (x, y), goal)
+            path = self.astar(self.field, (x, y), goal)
+            print("here comes path", path)
             x, y = self.resp_normalized(path.pop(), goal)
 
             return x, y

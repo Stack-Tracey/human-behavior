@@ -36,19 +36,20 @@ class Nodes:
                 x = y = z = x_size = y_size = z_size = radius = z_angle_deg = slowdown_fac = visibility = geometric_type = 0
                 field = np.zeros([self.field_x_size, self.field_y_size])
                 field2 = np.zeros([self.field_x_size, self.field_y_size])
-                marker = 1.
+                marker = 1
 
                 #initialises values according to object type: obs or tar
                 if len(obj) < 7:
                     x, y, z, z_size, radius, amount = obj
-                    radius = radius[0] / 2
 
+                    radius = radius[0] / 2
                     x_size = round(radius / 2)
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
-                    marker = 2.
+                    marker = 2
                 else:
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
+
                     x_size = round(x_size / 2)
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
@@ -111,12 +112,12 @@ class Nodes:
                     max_y_cent.append(i)
                 idx_max.append(max_y_cent)
 
-                #stores rotated objects in empty field and filled_field. marker 1 = obs, marker 2 = tar
+                #stores rotated objects in empty field and filled_field.
                 i = 0
                 for x in idx_max[0]:
                     y = idx_max[1][i]
-                    field2[x, y] = marker
-                    self.field_filled[x, y] = marker
+                    field2[int(x), int(y)] = marker
+                    self.field_filled[int(x), int(y)] = marker
                     i = i + 1
 
                 bbox = get_bounding_box(field2)
