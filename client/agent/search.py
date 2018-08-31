@@ -13,7 +13,8 @@ class Search:
     def __init__(self, field, targets):
         self.field = field
         self.targets = targets
-        #print("here comes search field and targets", self.field, self.targets)
+        self.tar_onhold = 0
+        self.reint = 1
 
 
     def heuristic(self, a, b):
@@ -67,37 +68,55 @@ class Search:
         return False
 
     def resp_normalized(self, start, goal):
-        print("reached normalization")
+        #print("reached normalization")
 
         x_s, y_s = start
-        print("start values from normalization", x_s, y_s)
+        #print("start values from normalization", x_s, y_s)
         x_g, y_g = goal
         print(x_s, y_s, x_g, y_g)
         x_r = x_g - x_s
         y_r = y_g - y_s
 
         m = abs(max(x_r, y_r))
-        print(m)
+        print("here comes m", m)
+        if m == 0:
+            m = 0.1
         x_rn = x_r / m
         y_rn = y_r / m
 
+        if x_rn > 1:
+            x_rn = 1
+        if x_rn < -1:
+            x_rn = -1
         return x_rn, y_rn
 
     def go_for_target(self, ball_pos):
-        print("reached go for target")
+        #print("reached go for target")
         x, y = ball_pos
         x = int(x) + 1
         y = int(y) + 1
+        print("here comes targets from search class", self.targets)
         tree = spatial.KDTree(self.targets)
         index = tree.query([(x, y)])[1][0]
         goal = self.targets[index]
+        if self.reint == 0:
+            print("here comes tar_onhold", self.tar_onhold)
+            self.targets.append(self.tar_onhold)
+            #print("here comes a", a)
+            sorted(self.targets)
+            print("here comes targets from seacht after sorting", self.targets)
         if ball_pos == goal:
+            self.tar_onhold = goal
+            self.targets.pop(index)
+            self.reint = 200
             return 0, 0
         else:
             print("here comes astar params", (x, y), goal)
             path = self.astar(self.field, (x, y), goal)
             print("here comes path", path)
             x, y = self.resp_normalized(path.pop(), goal)
+            self.reint -= 1
+            print("here comes reint", self.reint)
 
             return x, y
 

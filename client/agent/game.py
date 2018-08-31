@@ -75,6 +75,7 @@ class Game:
                                            obs_slowdown_fac, obs_visibility, obs_geometric_type, tar_x, tar_y, tar_z,
                                            tar_z_size, tar_radius, ball_x, ball_y, ball_z, ball_radius, nr_of_targets,
                                            nr_of_obstacles)
+        #print("here comes targets_tup from search object in game class", self.trial.targets_tup)
         self.search = search.Search(self.trial.field_filled, self.trial.targets_tup)
 
 
@@ -112,8 +113,8 @@ class Game:
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
 
-        print("Here comes player 1", p1_x, p1_y)
-        print("Here comes player 2", p2_x, p2_y)
+        #print("Here comes player 1", p1_x, p1_y)
+        #print("Here comes player 2", p2_x, p2_y)
 
         x, y = self.search.go_for_target((p2_x, p2_y))
         print("Here comes response", x, y)
