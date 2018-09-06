@@ -9,10 +9,8 @@ class Nodes:
         self.ball = ball
         self.field_x_size = 1025
         self.field_y_size = 770
-        #self.field_z_size = 500
         self.tile_size = self.field_x_size / 4
         self.field_filled = np.zeros([self.field_x_size, self.field_y_size], dtype=object)
-        #self.obs_trans = []
 
         #calculates the bounding box of a ndarray
         def get_bounding_box(x):
@@ -29,7 +27,7 @@ class Nodes:
                 bbox.append(slice(idx_i[0] + 1, idx_i[1] + 1))
             return bbox
 
-        def get_nodes(self, objects):
+        def get_nodes(objects):
             nodes = []
 
             for obj in objects:
@@ -70,7 +68,7 @@ class Nodes:
                 v = z - z_size
                 h = z + z_size
 
-                #adds the object to field
+                #adds object to field
                 field[l:r, u:o] = marker
 
                 #substracts x_center / y_center from objects and stores them in matrix
@@ -125,7 +123,7 @@ class Nodes:
             return nodes
 
         self.tar_nodes = get_nodes(self, self.targets)
-        #self.obs_nodes = get_nodes(self, self.obstacles)
+
 
 
 

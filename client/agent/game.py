@@ -8,6 +8,7 @@ class Game:
         self.trial = None
         self.search = None
         self.path = None
+        self.tar_nodes = None
 
         self.obstacles = None
         self.targets = None
@@ -17,18 +18,17 @@ class Game:
 
     def start(self, frame):
         return None
-        #exec.stop
 
     def stop(self, frame):
         return None
-        #exec.stop
 
+    #returns the number of trials included in one game
     def experiment_def(self, frame):
         nr_of_trials = frame["Nr_of_Trials"]
-
         return nr_of_trials
 
-    #initialises the game state
+    #initialises the trial state, one game hast several trials.
+    #each trial is 1m long and consists of 360fps
     def trial_def(self, frame):
         level_data = frame['Level Data']
         target_data = level_data['Targets']
@@ -75,22 +75,20 @@ class Game:
                                            obs_slowdown_fac, obs_visibility, obs_geometric_type, tar_x, tar_y, tar_z,
                                            tar_z_size, tar_radius, ball_x, ball_y, ball_z, ball_radius, nr_of_targets,
                                            nr_of_obstacles)
-        #print("here comes targets_tup from search object in game class", self.trial.targets_tup)
+
+        #initialises the field with given obstacles and targets
         self.search = search.Search(self.trial.field_filled, self.trial.targets_tup)
 
-
-
-        #self.obs_nodes = self.trial.obs_nodes
         self.tar_nodes = self.trial.tar_nodes
         self.ball_pos = self.trial.ball
-
         self.obstacles = self.trial.obstacles
         self.targets = self.trial.targets
 
+        #path to target returned by search
         self.path = self.search.go_for_target(self.trial.ball)
-        print("here comes path", self.path)
+        print("path to target returned by search in game.py: ", self.path)
 
-
+    #data about both players submitted in every frame during play
     def play(self, frame):
         frame_data = frame["Frame Data"]
 
@@ -107,17 +105,14 @@ class Game:
         p2_y = frame_data["Player 2"]['Y']
 
         trigger_state = frame_data['Trigger State']
-        start_last_frame = frame_data  ['Last Frame Start [ms]']
+        start_last_frame = frame_data ['Last Frame Start [ms]']
         trial_start = frame_data['Trial Start [ms]']
         trial_elapsed = frame_data['Trial Elapsed [ms]']
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
 
-        #print("Here comes player 1", p1_x, p1_y)
-        #print("Here comes player 2", p2_x, p2_y)
-
         x, y = self.search.go_for_target((p2_x, p2_y))
-        print("Here comes response", x, y)
+        print("response: ", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
