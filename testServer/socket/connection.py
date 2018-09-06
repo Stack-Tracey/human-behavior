@@ -1,8 +1,10 @@
-import virtualPlayerConnector
+import gameServer
 from client.agent import game
-stream = virtualPlayerConnector.VirtualPlayerConnector('192.168.56.101', 1337) # '172.18.101.69'
+stream = gameServer.GameServer(1337) # '172.18.101.69'
+stream.waitForClient()
 game = game.Game(stream)
 
+#gameloop
 def send_data(stream):
     x = True
     while x:
