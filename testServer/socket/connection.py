@@ -1,6 +1,6 @@
 import gameServer
 from client.agent import game
-stream = gameServer.GameServer(1337) # '172.18.101.69'
+stream = gameServer.GameServer(1337) #'172.18.101.69'
 stream.waitForClient()
 game = game.Game(stream)
 
@@ -14,10 +14,6 @@ def send_data(stream):
             print(msg_type)
             response = game.play(frame)
             stream.send_fr(response)
-            #stream.send_fr(\\r)
-            #stream.send_fr(\\n)
-
-
         else:
             print("overhead has been used---------------------------------------------------------------")
             print(frame)

@@ -157,10 +157,17 @@ def resp_normalized(start, goal):
     x_r = x_g - x_s
     y_r = y_g - y_s
 
-    m = abs(max(x_r, y_r))
+    #old calculation
+    #m = abs(max(x_r, y_r))
+    #print(m)
+    #x_rn = x_r / m
+    #y_rn = y_r / m
+
+    m = numpy.sqrt(pow(x_r, 2) + pow(y_r, 2))
     print(m)
     x_rn = x_r / m
     y_rn = y_r / m
+    return x_rn, y_rn
 
     return x_rn, y_rn
 

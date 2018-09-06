@@ -4,8 +4,6 @@ import random
 from pygame.locals import *
 
 
-
-
 def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(name)
@@ -61,16 +59,16 @@ class Player(pygame.sprite.Sprite):
         self.xv = self.xv * 0.96
         self.yv = self.yv * 0.96
 
-        if(self.rect.x < 0):
+        if self.rect.x < 0:
             self.xv = self.xv * (-1)
 
-        if(self.rect.y < 0):
+        if self.rect.y < 0:
             self.yv = self.yv * (-1)
 
-        if(self.rect.x > self.screenrect.width - self.rect.width):
+        if self.rect.x > self.screenrect.width - self.rect.width:
             self.xv = self.xv * (-1)
 
-        if(self.rect.y > self.screenrect.height - self.rect.height):
+        if self.rect.y > self.screenrect.height - self.rect.height:
             self.yv = self.yv * (-1)
 
     def reset_position(self):
@@ -81,11 +79,13 @@ class Player(pygame.sprite.Sprite):
         self.xv = self.xv * 0.9
         self.yv = self.yv * 0.9
 
+
 class Target(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect  = load_image("img/target.png", -1)
         self.rect.center=pos
+
 
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -106,9 +106,6 @@ def main():
     player = Player((500, 550))
     all_sprites.add(player)
 
-
-
-
     for pos in ((172, 133), (710, 659), (300, 407), (950, 200)):
         c = Target(pos)
         all_sprites.add(c)
@@ -118,14 +115,10 @@ def main():
         all_sprites.add(b)
         obstacles.add(b)
 
-
     while True:
-        # maximal 40 fps
         clock.tick(30)
-        # events bearbeiten
         events = pygame.event.get()
         for event in events:
-        # um möglichst einfach Positionen für die Spielobjekte zu sammeln:
             if event.type == MOUSEBUTTONDOWN:
                 print(event.pos)
             if event.type == QUIT:
@@ -134,31 +127,23 @@ def main():
                 if event.key == K_ESCAPE:
                     return
 
-
         for target in pygame.sprite.spritecollide(player, targets, True):
             player.wait = 120
             player.targets += 1
             print("player targets", player.targets)
         player.wait -= 1
-        #print("player wait", player.wait)
         if player.wait == 0:
             all_sprites.add(target)
             targets.add(target)
 
         for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
-                #player.targets -= 1
-                #player.reset_position()
             player.slowdown()
 
-        # den Bildschirm mit einer Hintergrundfarbe füllen und so
-        # gleichzeitig das alte Bild löschen
         screen.fill((100,100,100))
 
-        ## Über die Gruppe alle Sprites updaten und dann blitten
         all_sprites.update(events)
         all_sprites.draw(screen)
 
-        # alles aufs Fenster flippen
         pygame.display.flip()
 
 if __name__ == '__main__': main()
