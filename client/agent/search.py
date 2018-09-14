@@ -7,7 +7,6 @@ class Search:
         self.field = field
         self.targets = targets
         self.tar_onhold = 0
-        self.reint = 1
 
     #manhattan distance
     def heuristic(self, a, b):
@@ -86,41 +85,60 @@ class Search:
 
         x, y = ball_pos
         #x,y increased to avoid standing
-        x = int(x) + 1
-        y = int(y) + 1
-
+        x = int(x)
+        y = int(y)
+        print("ball pos after inting", x, y)
         #TODO replacing kdtree with calc of nearest target
         tree = spatial.KDTree(self.targets)
         print("targets from search class", self.targets)
 
         index = tree.query([(x, y)])[1][0]
         goal = self.targets[index]
+        x_g, y_g = goal
         print("index and goal from go for target", index, goal)
 
-        if self.reint == 0:
-            print("tar_onhold", self.tar_onhold)
-            self.targets.append(self.tar_onhold)
-            sorted(self.targets)
-            #neccesary for kdtree to determine the nearest target,
-            #kdtree does not work proper so will be be replaced
-            print("targets from search after sorting", self.targets)
-        if ball_pos == goal:
-            self.tar_onhold = goal
+        if (x, y) == goal:
+            print("collected coin", x, y, goal)
             self.targets.pop(index)
-            self.reint = 200
+            print("tar_onhold during collection", self.tar_onhold)
+            if self.tar_onhold == 0:
+                self.tar_onhold = goal
+            else:
+                self.targets.append(self.tar_onhold)
+                print("targets after coin putting back")
+                self.tar_onhold = goal
             return 0, 0
         else:
-            print("astar params: ", (x, y), goal)
-        path = self.astar(self.field, (x, y), goal)
-        print("path to target returned by search in search.py: ", path)
+            x, y = self.resp_normalized((x, y), goal)
+            return x, y
+
+
+       # if self.reint == 0:
+           # print("tar_onhold", self.tar_onhold)
+
+           # sorted(self.targets)
+            #neccesary for kdtree to determine the nearest target,
+            #kdtree does not work proper so will be be replaced
+            #print("targets from search after sorting", self.targets)
+        #if ball_pos == goal:
+            #self.tar_onhold = goal
+            #self.targets.pop(index)
+            #self.reint = 200
+            #return 0, 0
+       # else:
+            #print("astar params: ", (x, y), goal)
+            #path = self.astar(self.field, (x, y), goal)
+            #print("path to target returned by search in search.py: ", path)
         #if collected coin, don't move
-        if path == []:
-            x = 0
-            y = 0
-            return x, y
+        #if path == []:
+            #
+           # x = 0
+            #y = 0
+            #return x, y
         #else get the next step on path to move to
-        else:
-            x, y = self.resp_normalized(path.pop(), goal)
-            print("here comes reint", self.reint)
-            return x, y
+       # else:
+            #x, y = self.resp_normalized(path.pop(), goal)
+           # x, y = self.resp_normalized((x, y), goal)
+            #print("here comes reint", self.reint)
+           # return x, y
 

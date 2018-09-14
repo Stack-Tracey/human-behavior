@@ -28,7 +28,7 @@ class Game:
         return nr_of_trials
 
     #initialises the trial state, one game hast several trials.
-    #each trial is 1m long and consists of 360fps
+    #each trial is 1m long and consists of 60fps
     def trial_def(self, frame):
         level_data = frame['Level Data']
         target_data = level_data['Targets']
@@ -110,8 +110,11 @@ class Game:
         trial_elapsed = frame_data['Trial Elapsed [ms]']
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
+        print("position player 1", p1_x, p1_y)
+        print("position player 2", p2_x, p2_y)
 
-        x, y = self.search.go_for_target((p2_x, p2_y))
+        x, y = self.search.go_for_target((p1_x, p1_y))
+
         print("response: ", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 

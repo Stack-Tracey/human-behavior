@@ -122,7 +122,7 @@ class Nodes:
                 nodes.append(bbox)
             return nodes
 
-        self.tar_nodes = get_nodes(self, self.targets)
+        self.tar_nodes = get_nodes(self.targets)
 
 
 

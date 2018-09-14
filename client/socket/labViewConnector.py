@@ -28,3 +28,4 @@ class LabViewConnector:
 
     def close(self):
         self.sock.close()
+        file.close()
