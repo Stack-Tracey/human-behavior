@@ -70,8 +70,6 @@ class Search:
         x_r = x_g - x_s
         y_r = y_g - y_s
 
-        #TODO wrong calculation, the ball moves into the wrong direction
-        #  m = abs(max(x_r, y_r)) did not workout, new try:
         m = np.sqrt(pow(x_r, 2) + pow(y_r, 2))
         print("m from normalization", m)
 
@@ -112,33 +110,4 @@ class Search:
             x, y = self.resp_normalized((x, y), goal)
             return x, y
 
-
-       # if self.reint == 0:
-           # print("tar_onhold", self.tar_onhold)
-
-           # sorted(self.targets)
-            #neccesary for kdtree to determine the nearest target,
-            #kdtree does not work proper so will be be replaced
-            #print("targets from search after sorting", self.targets)
-        #if ball_pos == goal:
-            #self.tar_onhold = goal
-            #self.targets.pop(index)
-            #self.reint = 200
-            #return 0, 0
-       # else:
-            #print("astar params: ", (x, y), goal)
-            #path = self.astar(self.field, (x, y), goal)
-            #print("path to target returned by search in search.py: ", path)
-        #if collected coin, don't move
-        #if path == []:
-            #
-           # x = 0
-            #y = 0
-            #return x, y
-        #else get the next step on path to move to
-       # else:
-            #x, y = self.resp_normalized(path.pop(), goal)
-           # x, y = self.resp_normalized((x, y), goal)
-            #print("here comes reint", self.reint)
-           # return x, y
 
