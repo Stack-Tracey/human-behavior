@@ -1,5 +1,5 @@
-from client.agent import trialState
-from client.agent import search
+from client.actor import trialState
+from client.actor import search
 from scipy import spatial
 
 class Game:
