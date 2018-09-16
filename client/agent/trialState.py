@@ -37,7 +37,6 @@ class TrialState:
             i = 0
 
             while i < nr_of_obstacles:
-
                 x_val = obs_x[i]
                 y_val = obs_y[i]
                 z_val = obs_z[i]
@@ -49,8 +48,9 @@ class TrialState:
                 visible_fac = visibility[i]
                 geometric_type_val = geometric_type[i]
 
-                obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
-                obstacles.append(obs)
+                if visible_fac_val == 1 or visible_fac_val == 3: #1. visible for player 1, 2. visible for player 2, 3. visible for both
+                    obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
+                    obstacles.append(obs)
 
                 i = i + 1
             return obstacles
@@ -62,7 +62,6 @@ class TrialState:
             i = 0
 
             while i < nr_of_targets:
-
                 x_val = tar_x[i]
                 y_val = tar_y[i]
                 z_val = tar_z[i]
