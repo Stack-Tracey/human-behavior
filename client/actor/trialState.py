@@ -1,4 +1,4 @@
-from client.agent import nodes
+from client.actor import nodes
 
 class TrialState:
     def __init__(self, obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac,
@@ -32,7 +32,8 @@ class TrialState:
         self.ball = (ball_x, ball_y)# ball_z, ball_radius
 
         #TODO handling of different behavior: adding param for 'perfectness' and include by seeing all obstacles
-        #returns the positions of obstacles. Each Element in output-list has the same order as method call
+        #returns the positions of obstacles.
+        #visible_fac_val = {1. visible for player one, 2. visible for player two, 3. visible for both}
         def get_obstacles(obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac, visibility, geometric_type):
             obstacles = []
             i = 0
@@ -49,14 +50,15 @@ class TrialState:
                 visible_fac = visibility[i]
                 geometric_type_val = geometric_type[i]
 
-                if visible_fac_val == 1 or visible_fac_val == 3: #1. visible for player 1, 2. visible for player 2, 3. visible for both
+                if visible_fac_val == 1 or visible_fac_val == 3:
                     obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
                     obstacles.append(obs)
 
                 i = i + 1
+            print("obstacles, should be less than 9 elements: ", obstacles)
             return obstacles
 
-        #returns the positions of targets. Each Element in output-list has the same order as method call
+        #returns the positions of targets.
         def get_targets(tar_x, tar_y, tar_z, tar_z_size, tar_radius, nr_of_targets):
             targets = []
             tar_buffer = []
