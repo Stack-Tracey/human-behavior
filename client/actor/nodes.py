@@ -34,7 +34,7 @@ class Nodes:
                 x = y = z = x_size = y_size = z_size = radius = z_angle_deg = slowdown_fac = visibility = geometric_type = 0
                 field = np.zeros([self.field_x_size, self.field_y_size])
                 field2 = np.zeros([self.field_x_size, self.field_y_size])
-                marker = 1
+                global marker
 
                 #initialises values according to object type: obs or tar
                 if len(obj) < 7:
@@ -45,12 +45,15 @@ class Nodes:
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
                     marker = 2
+                    print("marker tar", marker)
                 else:
+                    print("reached loop for marker 1")
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
 
                     x_size = round(x_size / 2)
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
+                    marker = 1
 
                 #calculates the size of given object
                 l = x - x_size
@@ -119,10 +122,12 @@ class Nodes:
                     i = i + 1
 
                 bbox = get_bounding_box(field2)
+                print("fierld filled with obstacles", self.field_filled)
                 nodes.append(bbox)
             return nodes
 
         self.tar_nodes = get_nodes(self.targets)
+
 
 
 

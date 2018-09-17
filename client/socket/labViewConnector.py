@@ -1,7 +1,6 @@
 import socket
 import json
 
-
 class LabViewConnector:
     def __init__(self, ip, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

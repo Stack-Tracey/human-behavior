@@ -47,11 +47,11 @@ class TrialState:
                 z_size_val = obs_z_size[i]
                 angle_deg_val = obs_z_angle_deg[i]
                 slowdown_fac_val = obs_slowdown_fac[i]
-                visible_fac = visibility[i]
+                visible_fac_val = visibility[i]
                 geometric_type_val = geometric_type[i]
 
                 if visible_fac_val == 1 or visible_fac_val == 3:
-                    obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac, geometric_type_val]
+                    obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac_val, geometric_type_val]
                     obstacles.append(obs)
 
                 i = i + 1
@@ -88,6 +88,7 @@ class TrialState:
         self.targets = get_targets(tar_x, tar_y, tar_z, tar_z_size, tar_radius, nr_of_targets)
         self.nodes = nodes.Nodes(self.obstacles, self.targets, self.ball)
         self.tar_nodes = self.nodes.tar_nodes
+        self.obs_nodes = self.nodes.obstacles
         self.field_filled = self.nodes.field_filled
 
 

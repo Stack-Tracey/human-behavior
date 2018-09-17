@@ -13,7 +13,7 @@ class Game:
         self.obstacles = None
         self.targets = None
         self.ball_pos = None
-        self.field_filled = None
+        #self.field_filled = None
         #self.ball_pos = None
 
     def start(self, frame):
@@ -77,7 +77,7 @@ class Game:
                                            nr_of_obstacles)
 
         #initialises the field with given obstacles and targets
-        self.search = search.Search(self.trial.field_filled, self.trial.targets_tup)
+        self.search = search.Search(self.trial.field_filled , self.trial.targets_tup)
 
         self.tar_nodes = self.trial.tar_nodes
         self.ball_pos = self.trial.ball
@@ -86,7 +86,6 @@ class Game:
 
         #path to target returned by search
         self.path = self.search.go_for_target(self.trial.ball)
-        print("path to target returned by search in game.py: ", self.path)
 
     #data about both players submitted in every frame during play
     def play(self, frame):

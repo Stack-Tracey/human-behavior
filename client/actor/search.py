@@ -14,7 +14,6 @@ class Search:
 
     #A*-search
     def astar(self, array, start, goal):
-        print("reached astar")
         neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         close_set = set()
         came_from = {}
@@ -61,17 +60,13 @@ class Search:
 
     #returns force on ball normalized to [-1, 1]
     def resp_normalized(self, start, goal):
-        print("reached normalization")
-
         x_s, y_s = start
         x_g, y_g = goal
-        print("start/goal values for normalization x_s y_s, x_g y_g", x_s, y_s, x_g, y_g)
 
         x_r = x_g - x_s
         y_r = y_g - y_s
 
         m = np.sqrt(pow(x_r, 2) + pow(y_r, 2))
-        print("m from normalization", m)
 
         x_rn = (1 / m) * x_r
         y_rn = (1 / m) * y_r
@@ -81,33 +76,42 @@ class Search:
     def go_for_target(self, ball_pos):
         print("reached go for target")
 
-        x, y = ball_pos
+        x_pos, y_pos = ball_pos
         #x,y increased to avoid standing
-        x = int(x)
-        y = int(y)
-        print("ball pos after inting", x, y)
+        x_pos_int = int(x_pos)
+        y_pos_int = int(y_pos)
+        start = (x_pos_int, y_pos_int)
+
         #TODO replacing kdtree with calc of nearest target
         tree = spatial.KDTree(self.targets)
         print("targets from search class", self.targets)
 
-        index = tree.query([(x, y)])[1][0]
+        index = tree.query([start])[1][0]
         goal = self.targets[index]
-        x_g, y_g = goal
         print("index and goal from go for target", index, goal)
 
-        if (x, y) == goal:
-            print("collected coin", x, y, goal)
+        global nxt_mv
+        if start == goal:
             self.targets.pop(index)
-            print("tar_onhold during collection", self.tar_onhold)
             if self.tar_onhold == 0:
                 self.tar_onhold = goal
             else:
                 self.targets.append(self.tar_onhold)
-                print("targets after coin putting back")
                 self.tar_onhold = goal
             return 0, 0
         else:
-            x, y = self.resp_normalized((x, y), goal)
+            path = self.astar(self.field, start, goal)
+            print("path from search: ", path)
+            path_len = path.__len__()
+            print("length of search path: ", path_len)
+            step = 10
+            if path_len < step:
+                nxt_mv = path.pop()
+            else:
+                index = path_len - step
+                nxt_mv = path[index]
+                print("next move starter position", nxt_mv)
+            x, y = self.resp_normalized(start, nxt_mv)
             return x, y
 
 
