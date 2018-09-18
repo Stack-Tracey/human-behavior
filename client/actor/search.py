@@ -115,6 +115,7 @@ class Search:
                 nxt_mv = path.pop()
                 print("next move starter position 1", nxt_mv)
 
+
             x, y = self.resp_normalized(start, nxt_mv)
             return x, y
 
