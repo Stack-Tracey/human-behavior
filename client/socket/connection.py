@@ -1,8 +1,10 @@
 import labViewConnector
 from client.actor import game
-stream = labViewConnector.LabViewConnector('172.18.101.69', 1337) #u: 192.168.56.101
-game = game.Game(stream)
 
+lab = '172.18.101.69'
+moi = '192.168.56.101'
+stream = labViewConnector.LabViewConnector(moi, 1337) #u:
+game = game.Game(stream)
 
 def get_data(stream):
     x = True
