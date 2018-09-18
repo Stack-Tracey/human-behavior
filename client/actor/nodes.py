@@ -127,6 +127,7 @@ class Nodes:
             return nodes
 
         self.tar_nodes = get_nodes(self.targets)
+        self.obs_nodes = get_nodes(self.obstacles)
 
 
 
