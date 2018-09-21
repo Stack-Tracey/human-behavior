@@ -17,11 +17,16 @@ class Nodes:
             mask = x == 0
             bbox = []
             all_axis = np.arange(x.ndim)
+            print("bbox all axis: ", all_axis)
             for kdim in all_axis:
                 nk_dim = np.delete(all_axis, kdim)
+                print("bbox nk_dim: ", nk_dim)
                 mask_i = mask.all(axis=tuple(nk_dim))
+                print("bbox mask_i", mask_i)
                 dmask_i = np.diff(mask_i)
+                print("bbox dmask_1: ", dmask_i)
                 idx_i = np.nonzero(dmask_i)[0]
+                print("bbox idx_1: ", idx_i)
                 if len(idx_i) != 2:
                     raise ValueError('Algorithm failed, {} does not have 2 elements!'.format(idx_i))
                 bbox.append(slice(idx_i[0] + 1, idx_i[1] + 1))
@@ -29,7 +34,6 @@ class Nodes:
 
         def get_nodes(objects):
             nodes = []
-
             for obj in objects:
                 x = y = z = x_size = y_size = z_size = radius = z_angle_deg = slowdown_fac = visibility = geometric_type = 0
                 field = np.zeros([self.field_x_size, self.field_y_size])
@@ -45,7 +49,7 @@ class Nodes:
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
                     marker = 2
-                    print("marker tar", marker)
+                    print("marker tar 2", marker)
                 else:
                     print("reached loop for marker 1")
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
@@ -56,6 +60,7 @@ class Nodes:
                     marker = 1
 
                 #calculates the size of given object
+                enlarge = 10 #to avoid hitting obstacles
                 l = x - x_size
                 if l == 0:
                     l = l + 1
@@ -121,16 +126,14 @@ class Nodes:
                     self.field_filled[int(x), int(y)] = marker
                     i = i + 1
 
+                print("filt with obj handled to bbox", field2)
                 bbox = get_bounding_box(field2)
-                print("fierld filled with obstacles", self.field_filled)
+                #print("fierld filled with obstacles", self.field_filled)
                 nodes.append(bbox)
             return nodes
 
-        self.tar_nodes = get_nodes(self.targets)
+        #self.tar_nodes = get_nodes(self.targets)
         self.obs_nodes = get_nodes(self.obstacles)
-
-
-
 
 
 

@@ -79,7 +79,7 @@ class Game:
         #initialises the field with given obstacles and targets
         self.search = search.Search(self.trial.field_filled , self.trial.targets_tup)
 
-        self.tar_nodes = self.trial.tar_nodes
+        #self.tar_nodes = self.trial.tar_nodes
         self.ball_pos = self.trial.ball
         self.obstacles = self.trial.obstacles
         self.targets = self.trial.targets

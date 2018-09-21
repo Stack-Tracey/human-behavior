@@ -3,7 +3,7 @@ from client.actor import game
 
 lab = '172.18.101.69'
 moi = '192.168.56.101'
-stream = labViewConnector.LabViewConnector(moi, 1337) #u:
+stream = labViewConnector.LabViewConnector(lab, 1337) #u:
 game = game.Game(stream)
 
 def get_data(stream):

@@ -102,8 +102,11 @@ class Search:
         else:
             path = self.astar(self.field, start, goal)
             print("path from search: ", path)
-            step = 10
-            path_len = path.__len__()
+            step = 1
+            if path == False:
+                path_len = path
+            else:
+                path_len = path.__len__()
 
             if path_len >= step:
                 index = path_len - step
@@ -114,7 +117,6 @@ class Search:
             else:
                 nxt_mv = path.pop()
                 print("next move starter position 1", nxt_mv)
-
 
             x, y = self.resp_normalized(start, nxt_mv)
             return x, y
