@@ -3,12 +3,13 @@ import numpy as np
 np.set_printoptions(threshold=np.inf)
 
 class Nodes:
-    def __init__(self, obstacles, targets, ball):
+    def __init__(self, obstacles, targets, ball, radius):
         self.obstacles = obstacles
         self.targets = targets
         self.ball = ball
-        self.field_x_size = 1025
-        self.field_y_size = 770
+        self.ball_radius = radius
+        self.field_x_size = 1024 #1025
+        self.field_y_size = 769 #770
         self.tile_size = self.field_x_size / 4
         self.field_filled = np.zeros([self.field_x_size, self.field_y_size], dtype=object)
 
@@ -17,16 +18,13 @@ class Nodes:
             mask = x == 0
             bbox = []
             all_axis = np.arange(x.ndim)
-            print("bbox all axis: ", all_axis)
             for kdim in all_axis:
                 nk_dim = np.delete(all_axis, kdim)
-                print("bbox nk_dim: ", nk_dim)
                 mask_i = mask.all(axis=tuple(nk_dim))
-                print("bbox mask_i", mask_i)
+                #print("bbox mask_i: ", mask_i)
                 dmask_i = np.diff(mask_i)
-                print("bbox dmask_1: ", dmask_i)
+                #print("bbox dmask: ", dmask_i)
                 idx_i = np.nonzero(dmask_i)[0]
-                print("bbox idx_1: ", idx_i)
                 if len(idx_i) != 2:
                     raise ValueError('Algorithm failed, {} does not have 2 elements!'.format(idx_i))
                 bbox.append(slice(idx_i[0] + 1, idx_i[1] + 1))
@@ -49,35 +47,43 @@ class Nodes:
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
                     marker = 2
-                    print("marker tar 2", marker)
                 else:
-                    print("reached loop for marker 1")
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
 
                     x_size = round(x_size / 2)
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
                     marker = 1
-
+                print("x und y der obs für bbox: ", x, y)
                 #calculates the size of given object
-                enlarge = 10 #to avoid hitting obstacles
-                l = x - x_size
-                if l == 0:
-                    l = l + 1
-                r = x + x_size + 1
-                if r == 0:
-                    r = l + 1
-                u = y - y_size
-                if u == 0:
-                    u = u + 1
-                o = y + y_size + 1
-                if o == 0:
-                    o = o + 1
+                enlarge = 0#self.ball_radius #to avoid hitting obstacles
+                print("enlage: ", enlarge)
+
+                l = x - (x_size + enlarge)
+                r = x + x_size + 1 + enlarge
+                u = y - (y_size + enlarge)
+                o = y + y_size + 1 + enlarge
+
                 v = z - z_size
                 h = z + z_size
 
+                #interrogate edge cases
+                if u <= 1:
+                    u = 1
+                    o += 1
+                elif o >= 769:
+                    o = 768
+                    u -= 1
+                elif l <= 1:
+                    l = 1
+                    r += 1
+                elif r >= 1024:
+                    r = 1023
+                    l -= 1
+
                 #adds object to field
                 field[l:r, u:o] = marker
+                print("eingezeichnete obstacles: ", l, " bis ", r, " und ", u, " bis ", o)
 
                 #substracts x_center / y_center from objects and stores them in matrix
                 idx_1 = np.nonzero(field)
@@ -126,7 +132,6 @@ class Nodes:
                     self.field_filled[int(x), int(y)] = marker
                     i = i + 1
 
-                print("filt with obj handled to bbox", field2)
                 bbox = get_bounding_box(field2)
                 #print("fierld filled with obstacles", self.field_filled)
                 nodes.append(bbox)

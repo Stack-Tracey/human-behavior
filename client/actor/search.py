@@ -74,8 +74,6 @@ class Search:
         return x_rn, y_rn
 
     def go_for_target(self, ball_pos):
-        print("reached go for target")
-
         x_pos, y_pos = ball_pos
         #x,y increased to avoid standing
         x_pos_int = int(x_pos)
@@ -95,8 +93,10 @@ class Search:
             self.targets.pop(index)
             if self.tar_onhold == 0:
                 self.tar_onhold = goal
+                print("Target puttetd on hold after start = goal", self.tar_onhold)
             else:
                 self.targets.append(self.tar_onhold)
+                print("target list, after appending tar_onhold back after coin collection")
                 self.tar_onhold = goal
             return 0, 0
         else:
@@ -116,7 +116,7 @@ class Search:
                 return 0, 0
             else:
                 nxt_mv = path.pop()
-                print("next move starter position 1", nxt_mv)
+                print("next move starter position", nxt_mv)
 
             x, y = self.resp_normalized(start, nxt_mv)
             return x, y

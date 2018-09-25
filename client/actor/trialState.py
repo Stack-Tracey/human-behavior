@@ -86,7 +86,7 @@ class TrialState:
                                        self.obs_z_size, self.obs_z_angle_deg, self.obs_slowdown_fac,
                                        self.obs_visibility, self.obs_geometric_type)
         self.targets = get_targets(tar_x, tar_y, tar_z, tar_z_size, tar_radius, nr_of_targets)
-        self.nodes = nodes.Nodes(self.obstacles, self.targets, self.ball)
+        self.nodes = nodes.Nodes(self.obstacles, self.targets, self.ball, self.ball_radius)
         #self.tar_nodes = self.nodes.tar_nodes
         self.obs_nodes = self.nodes.obstacles
         self.field_filled = self.nodes.field_filled
