@@ -89,7 +89,7 @@ class Search:
         print("index and goal from go for target", index, goal)
 
         global nxt_mv
-        if start == goal:
+        if start == goal or nxt_mv == goal: # tried to fix missing target collision with or statement
             self.targets.pop(index)
             if self.tar_onhold == 0:
                 self.tar_onhold = goal
