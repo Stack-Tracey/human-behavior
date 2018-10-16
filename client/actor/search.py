@@ -7,6 +7,7 @@ class Search:
         self.field = field
         self.targets = targets
         self.tar_onhold = 0
+        self.nxt_mv = 0
 
     #manhattan distance
     def heuristic(self, a, b):
@@ -88,8 +89,7 @@ class Search:
         goal = self.targets[index]
         print("index and goal from go for target", index, goal)
 
-        global nxt_mv
-        if start == goal or nxt_mv == goal: # tried to fix missing target collision with or statement
+        if start == goal or self.nxt_mv == goal: # tried to fix missing target collision with or statement
             self.targets.pop(index)
             if self.tar_onhold == 0:
                 self.tar_onhold = goal
@@ -110,15 +110,15 @@ class Search:
 
             if path_len >= step:
                 index = path_len - step
-                nxt_mv = path[index]
-                print("next move starter position 1", nxt_mv)
+                self.nxt_mv = path[index]
+                print("next move starter position 1", self.nxt_mv)
             elif path_len == False:
                 return 0, 0
             else:
-                nxt_mv = path.pop()
-                print("next move starter position", nxt_mv)
+                self.nxt_mv = path.pop()
+                print("next move starter position", self.nxt_mv)
 
-            x, y = self.resp_normalized(start, nxt_mv)
+            x, y = self.resp_normalized(start, self.nxt_mv)
             return x, y
 
 

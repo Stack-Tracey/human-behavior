@@ -2,8 +2,9 @@ import labViewConnector
 from client.actor import game
 
 lab = '172.18.101.69'
-moi = '192.168.56.101'
-stream = labViewConnector.LabViewConnector(lab, 1337) #u:
+vbx = '192.168.56.101'
+localhorst = '127.0.0.1'
+stream = labViewConnector.LabViewConnector(localhorst, 1337) #u:
 game = game.Game(stream)
 
 def get_data(stream):
@@ -22,6 +23,7 @@ def get_data(stream):
 
         elif msg_type == "Trial Definition":
             game.trial_def(frame)
+            print("frame received")
 
         elif msg_type == "Start":
             game.start(frame)

@@ -23,7 +23,7 @@ class GameServer:
                 break
             else:
                 byteA.append(data[0])
-        print(byteA)
+        #print(byteA)
         str = byteA.decode("utf-8")
         a = json.loads(str)
         return a
