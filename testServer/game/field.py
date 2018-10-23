@@ -84,8 +84,8 @@ class Player(pygame.sprite.Sprite):
         self.xv = self.yv = 0
 
     def slowdown(self):
-        self.xv = self.xv * 0.9
-        self.yv = self.yv * 0.9
+        self.xv = self.xv * 0.5
+        self.yv = self.yv * 0.5
 
 
 class Target(pygame.sprite.Sprite):
@@ -111,6 +111,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.rect.center = (1024-x, 768-y)
         #self.image = pygame.transform.scale(self.image, (30,120))
         self.image = pygame.transform.rotate(self.image, rotation)
+        self.rect = self.image.get_rect()
         self.rect.center = (1024-x, 768-y)
 
 def main():
