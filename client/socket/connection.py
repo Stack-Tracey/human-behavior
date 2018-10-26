@@ -1,15 +1,18 @@
 import labViewConnector
 from client.actor import game
+import pygame
 
 lab = '172.18.101.69'
 vbx = '192.168.56.101'
 localhorst = '127.0.0.1'
-stream = labViewConnector.LabViewConnector(lab, 1337) #u:
+stream = labViewConnector.LabViewConnector(localhorst, 1337) #u:
 game = game.Game(stream)
 
 def get_data(stream):
     x = True
+    clock = pygame.time.Clock()
     while x:
+        clock.tick(10)
         frame = stream.receive_fr()
         msg_type = frame["MsgType"]
 
