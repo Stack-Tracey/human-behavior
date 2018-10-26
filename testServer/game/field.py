@@ -2,8 +2,8 @@
 import pygame
 from testServer.socket import gameServer
 import random
+import math as Math
 from pygame.locals import *
-
 
 
 def load_image(name, colorkey=None):
@@ -20,6 +20,36 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
+def circRotetedRectCollide(circ, rect):
+    #for rect in rects:
+    backRotatedCircX = Math.cos(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) - Math.sin(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centerx
+    backRotatedCircY = Math.sin(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) + Math.cos(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centery
+
+    closestX = 0
+    closestY = 0
+
+    if (backRotatedCircX  < rect.rect.x):
+        closestX = rect.rect.x
+    elif (backRotatedCircX  > rect.rect.x + rect.rect.height):
+        closestX = rect.rect.x + rect.rect.height
+    else:
+        closestX = backRotatedCircX
+
+    if (backRotatedCircY < rect.rect.y):
+        closestY = rect.rect.y
+    elif (backRotatedCircY > rect.rect.y + rect.rect.width):
+        closestY = rect.rect.y + rect.rect.width
+    else:
+        closestY = backRotatedCircY
+
+    distance = Math.sqrt(abs(backRotatedCircX - closestX)**2 + abs(backRotatedCircY - closestY)**2)
+
+    if (distance < circ.radius):
+        return True
+    else:
+        return False
+
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -29,6 +59,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
         self.start_pos = pos
+        self.radius = self.rect.width/2
         self.speed = 4
         self.x = self.y = 0
         self.xv = self.yv = 0
@@ -107,12 +138,14 @@ class Obstacle(pygame.sprite.Sprite):
         self.image.fill([255,0,0])
         self.image.set_colorkey([0,0,0])
         self.rect = self.image.get_rect()
+        self.angle = Math.radians(rotation)
         x, y = pos
         self.rect.center = (1024-x, 768-y)
         #self.image = pygame.transform.scale(self.image, (30,120))
         self.image = pygame.transform.rotate(self.image, rotation)
         self.rect = self.image.get_rect()
         self.rect.center = (1024-x, 768-y)
+
 
 def main():
     pygame.init()
@@ -123,8 +156,13 @@ def main():
     all_sprites = pygame.sprite.Group()
     targets = pygame.sprite.Group()
     obstacles = pygame.sprite.Group()
+    myobstacle = Obstacle((600,600), 90)
+    all_sprites.add(myobstacle)
+    obstacles.add(myobstacle)
     player = Player((512, 384))
+    player2 = Player((Math.cos(myobstacle.angle) * (player.rect.center[0] - myobstacle.rect.centerx) - Math.sin(myobstacle.angle) * (player.rect.center[1] - myobstacle.rect.centery) + myobstacle.rect.centerx, Math.sin(myobstacle.angle) * (player.rect.center[0] - myobstacle.rect.centerx) + Math.cos(myobstacle.angle) * (player.rect.center[1] - myobstacle.rect.centery) + myobstacle.rect.centery))
     all_sprites.add(player)
+    #all_sprites.add(player2)
     last_target = False
     this_target = False
 
@@ -134,10 +172,10 @@ def main():
         all_sprites.add(c)
         targets.add(c)
 
-    for opt in ([(512, 445), 90], [(459, 353), 210], [(725, 261),330], [(420, 544),20], [(328, 384),100], [(420, 224),80], [(512, 77),180], [(604, 544),280], [(778, 538),300]):
-        b = Obstacle(opt[0], opt[1])
-        all_sprites.add(b)
-        obstacles.add(b)
+    #for opt in ([(512, 445), 90], [(459, 353), 210], [(725, 261),330], [(420, 544),20], [(328, 384),100], [(420, 224),80], [(512, 77),180], [(604, 544),280], [(778, 538),300]):
+    #    b = Obstacle(opt[0], opt[1])
+    #    all_sprites.add(b)
+    #    obstacles.add(b)
 
     game_server = gameServer.GameServer(1337)
     game_server.waitForClient()
@@ -237,7 +275,7 @@ def main():
         game_server.send_fr(frame)
 
         #--------------------------------------
-        clock.tick(30)
+        clock.tick(10)
         events = pygame.event.get()
         for event in events:
             if event.type == MOUSEBUTTONDOWN:
@@ -246,7 +284,6 @@ def main():
             if event.type == QUIT:
                 return
             elif event.type == KEYDOWN:
-                print(player.rect.center)
                 #print(event.type)
                 if event.key == K_ESCAPE:
                     return
@@ -263,6 +300,10 @@ def main():
 
         for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
             player.slowdown()
+
+        for obstacle in obstacles:
+            if(circRotetedRectCollide(player, obstacle)):
+                print(obstacle)
 
         screen.fill((100,100,100))
 
