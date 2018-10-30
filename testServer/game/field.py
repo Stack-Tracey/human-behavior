@@ -173,7 +173,7 @@ def main():
     game_server = gameServer.GameServer(1337)
     game_server.waitForClient()
 
-    #gameloop als Klasse definieren
+    #TODO gameloop als Klasse definieren
     fr_nr = 0
     while True:
         if fr_nr < 1:
@@ -299,7 +299,6 @@ def main():
             if(circRotatedRectCollide(player, obstacle)):
                 player.slowdown()
                 #screen.fill((255, 100, 100))
-
 
         all_sprites.update(events)
         all_sprites.draw(screen)
