@@ -19,7 +19,7 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
-def circRotetedRectCollide(circ, rect):
+def circRotatedRectCollide(circ, rect):
     backRotatedCircX = Math.cos(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) - Math.sin(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centerx
     backRotatedCircY = Math.sin(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) + Math.cos(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centery
 
@@ -291,15 +291,14 @@ def main():
             last_target = this_target
             this_target = False
 
-        for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
-            player.slowdown()
+        #for obstacle in pygame.sprite.spritecollide(player, obstacles, False):
+            #player.slowdown()
 
         screen.fill((100, 100, 100))
         for obstacle in obstacles:
-            if(circRotetedRectCollide(player, obstacle)):
-                print(obstacle)
-                screen.fill((255, 100, 100))
-
+            if(circRotatedRectCollide(player, obstacle)):
+                player.slowdown()
+                #screen.fill((255, 100, 100))
 
 
         all_sprites.update(events)
