@@ -12,7 +12,7 @@ def get_data(stream):
     x = True
     clock = pygame.time.Clock()
     while x:
-        clock.tick(10)
+        clock.tick(30)
         frame = stream.receive_fr()
         msg_type = frame["MsgType"]
 
