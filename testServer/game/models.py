@@ -132,7 +132,7 @@ class Target(pygame.sprite.Sprite):
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, pos, rotation):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([30,120])
+        self.image = pygame.Surface([25,68])
         self.image.fill([255,0,0])
         self.image.set_colorkey([0,0,0])
         self.rect = self.image.get_rect()

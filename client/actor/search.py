@@ -74,12 +74,14 @@ class Search:
 
         return x_rn, y_rn
 
-    def go_for_target(self, ball_pos):
+    def go_for_target(self, ball_pos, radius):
         x_pos, y_pos = ball_pos
         #x,y increased to avoid standing
         x_pos_int = int(x_pos)
         y_pos_int = int(y_pos)
         start = (x_pos_int, y_pos_int)
+        r = radius
+        print("radius from ball", radius)
 
         #TODO replacing kdtree with calc of nearest target
         tree = spatial.KDTree(self.targets)
@@ -89,17 +91,42 @@ class Search:
         goal = self.targets[index]
         print("index and goal from go for target", index, goal)
 
-        if start == goal or self.nxt_mv == goal: # tried to fix missing target collision with or statement
-            self.targets.pop(index)
-            if self.tar_onhold == 0:
-                self.tar_onhold = goal
-                print("Target puttetd on hold after start = goal", self.tar_onhold)
-            else:
-                self.targets.append(self.tar_onhold)
-                print("target list, after appending tar_onhold back after coin collection")
-                self.tar_onhold = goal
+        nxt_mv = self.nxt_mv
+
+        x, y = goal
+        a = (x - r, y - r)
+        a_x, a_y = a
+        b = (x + r, y + r)
+        b_x, b_y = b
+        # a <= start <= b
+        # or
+        c = (x - r, y)
+        d = (x + r, y)
+        # c <= start <= d
+        # or
+        e = (x, y - r)
+        f = (x, y + r)
+        # e <= start <= f
+        # or
+        g = (x - r, y + r)
+        g_x, g_y = g
+        h = (x + r, y - r)
+        h_x, h_y = h
+        # g <= start <= h
+        start_x, start_y = start
+
+        print("strat and goal and a, b, c, d", start, goal, a, b, c, d, e, f, g, h)
+        if start == goal or nxt_mv == goal or c <= start <= d and e <= start <= f or g_x <= start_x <= h_x and h_y <= start_y <= g_y and a_x <= start_x <= b_x and a_y <= start_y <= b_y:  # tried to fix missing target collision with or statement
+            print("first if statement")
+            self.targets.pop(index)  # self
+            if self.tar_onhold != 0:  # self
+                self.targets.append(self.tar_onhold)  # self self
+
+            self.tar_onhold = goal  # self
+            print("Target puttetd on hold after start = goal", self.tar_onhold)
             return 0, 0
         else:
+            print("x", start, goal)
             path = self.astar(self.field, start, goal)
             print("path from search: ", path)
             step = 1
@@ -110,15 +137,16 @@ class Search:
 
             if path_len >= step:
                 index = path_len - step
-                self.nxt_mv = path[index]
-                print("next move starter position 1", self.nxt_mv)
+                nxt_mv = path[index]
+                print("next move starter position 1", nxt_mv)
             elif path_len == False:
                 return 0, 0
             else:
-                self.nxt_mv = path.pop()
-                print("next move starter position", self.nxt_mv)
+                nxt_mv = path.pop()
+                print("next move starter position", nxt_mv)
 
-            x, y = self.resp_normalized(start, self.nxt_mv)
+            self.nxt_mv = nxt_mv
+            x, y = self.resp_normalized(start, nxt_mv)  # self
             return x, y
 
 

@@ -85,7 +85,7 @@ class Game:
         self.targets = self.trial.targets
 
         #path to target returned by search
-        self.path = self.search.go_for_target(self.trial.ball)
+        self.path = self.search.go_for_target(self.trial.ball, self.trial.ball_radius)
 
     #data about both players submitted in every frame during play
     def play(self, frame):
@@ -112,7 +112,7 @@ class Game:
         print("position player 1", p1_x, p1_y)
         print("position player 2", p2_x, p2_y)
 
-        x, y = self.search.go_for_target((p1_x, p1_y))
+        x, y = self.search.go_for_target((p1_x, p1_y), self.trial.ball_radius)
 
         print("response: ", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}

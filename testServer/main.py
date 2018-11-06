@@ -3,7 +3,6 @@ from pygame.locals import *
 from testServer.game import game
 from testServer.game import models
 
-
 def main():
     pygame.init()
     screen = pygame.display.set_mode((1024, 768))
