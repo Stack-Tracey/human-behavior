@@ -55,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.start_pos = pos
         self.radius = self.rect.width/2
-        self.speed = 4
+        self.speed = 4 # TODO doese not seem to cause any effect besides standing on slowdown area
         self.x = self.y = 0
         self.xv = self.yv = 0
         self.targets = 0
@@ -89,9 +89,9 @@ class Player(pygame.sprite.Sprite):
                 self.y = 0
         #place for vector
         self.rect.move_ip(self.xv, self.yv)
-        # langsam werden des balles(ausrollen)
-        self.xv = self.xv * 0.96
-        self.yv = self.yv * 0.96
+        # langsam werden des balles(ausrollen) overall speed
+        self.xv = self.xv * 0.1#0.96
+        self.yv = self.yv * 0.1#0.96
 
         if self.rect.x < 0:
             self.xv = self.xv * (-1)
@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
         self.xv = self.xv * 0.8
         self.yv = self.yv * 0.8
 
-    # hinzufuegen der kraftvektoren des clients
+    # adding forces of client
     def applyForces(self, x, y):
         self.xv = self.xv + x
         self.yv = self.yv + y

@@ -116,7 +116,7 @@ class Search:
         start_x, start_y = start
 
         print("strat and goal and a, b, c, d", start, goal, a, b, c, d, e, f, g, h)
-        if start == goal or nxt_mv == goal or c <= start <= d and e <= start <= f or g_x <= start_x <= h_x and h_y <= start_y <= g_y and a_x <= start_x <= b_x and a_y <= start_y <= b_y:  # tried to fix missing target collision with or statement
+        if start == goal or nxt_mv == goal or c <= start <= d and e <= start <= f or g_x <= start_x <= h_x and h_y <= start_y <= g_y and a_x <= start_x <= b_x and a_y <= start_y <= b_y:
             print("first if statement")
             self.targets.pop(index)  # self
             if self.tar_onhold != 0:  # self
