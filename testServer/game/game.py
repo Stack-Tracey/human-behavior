@@ -47,12 +47,21 @@ class Game():
 
         self.all_sprites.update(events)
 
-    def draw(self):
+    def draw(self, afx, afy):
         fps = self.font.render(str(int(self.clock.get_fps())), True, pygame.Color('black'))
         score = self.font.render(str(self.score), True, pygame.Color('black'))
+        afx = self.font.render("afx: "+str(afx), True, pygame.Color('yellow'))
+        afy = self.font.render("afy: "+str(afy), True, pygame.Color('yellow'))
+        fx = self.font.render("avx:"+str(self.player.xv), True, pygame.Color('yellow'))
+        fy = self.font.render("avy:" + str(self.player.yv), True, pygame.Color('yellow'))
+
 
         self.screen.fill((100, 100, 100))
         self.all_sprites.draw(self.screen)
         self.player.draw(self.screen)
         self.screen.blit(fps, (50, 50))
         self.screen.blit(score, (50,30))
+        self.screen.blit(afx, (50, 70))
+        self.screen.blit(afy, (50, 90))
+        self.screen.blit(fx, (50, 110))
+        self.screen.blit(fy, (50, 130))

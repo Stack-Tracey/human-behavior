@@ -87,11 +87,26 @@ class Player(pygame.sprite.Sprite):
                 self.x = 0
         if self.y and not self.screenrect.contains(self.rect.move(0, self.y)):
                 self.y = 0
-        #place for vector
-        self.rect.move_ip(self.xv, self.yv)
+
+
+        # sinde rect.move only accepts ints but we also want to count 0.7 as force as well:
+        """
+        hpx = self.xv
+        if(0.1 < self.xv and 1.0 > self.xv):
+            hpx = 1
+        else:
+            hpx = self.xv
+
+        hpy = self.yv
+        if (0.1 < self.yv and 1.0 > self.yv):
+            hpy = 1
+        else:
+            hpy = self.yv
+        """
+        self.rect.move_ip(round(self.xv), round(self.yv))
         # langsam werden des balles(ausrollen) overall speed
-        self.xv = self.xv * 0.1#0.96
-        self.yv = self.yv * 0.1#0.96
+        self.xv = self.xv * 0.3 #0.96
+        self.yv = self.yv * 0.3 #0.96
 
         if self.rect.x < 0:
             self.xv = self.xv * (-1)
@@ -138,7 +153,8 @@ class Obstacle(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.angle = math.radians(rotation)
         x, y = pos
-        self.rect.center = (1024-x, 768-y)
+        #self.rect.center = (1024-x, 768-y)
+        self.rect.center = (x, y)
         self.oldrect = self.rect
         self.image = pygame.transform.rotate(self.image, rotation)
         self.rect = self.image.get_rect()

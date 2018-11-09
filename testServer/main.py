@@ -25,8 +25,8 @@ def mainLoop(Game):
         receive = Game.server.receive_fr()
         #p1_x = #TODO finding x coordinates from ball position
         #p1_y =
-        p1_fx = receive["Frame Data"]["X"] #0.334566544444
-        p1_fy = receive["Frame Data"]["Y"] #0.334566544444
+        p1_fx = round(receive["Frame Data"]["X"]) #0.334566544444
+        p1_fy = round(receive["Frame Data"]["Y"]) #0.334566544444
 
         Game.player.applyForces(p1_fx, p1_fy)
         print("applied forces from peer:", p1_fx, p1_fy)
@@ -47,7 +47,7 @@ def mainLoop(Game):
         Game.server.send_fr(Game.server.frame)
         print("send frame by server: ", Game.server.getFrame())
         Game.update(events)
-        Game.draw()
+        Game.draw(p1_fx, p1_fy)
         pygame.display.flip()
         Game.clock.tick(30)
 
