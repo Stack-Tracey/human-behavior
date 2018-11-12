@@ -49,7 +49,7 @@ def mainLoop(Game):
         Game.update(events)
         Game.draw(p1_fx, p1_fy)
         pygame.display.flip()
-        Game.clock.tick(30)
+        Game.clock.tick(60)
 
 if __name__ == "__main__":
     main()

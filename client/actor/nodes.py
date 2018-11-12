@@ -21,9 +21,7 @@ class Nodes:
             for kdim in all_axis:
                 nk_dim = np.delete(all_axis, kdim)
                 mask_i = mask.all(axis=tuple(nk_dim))
-                #print("bbox mask_i: ", mask_i)
                 dmask_i = np.diff(mask_i)
-                #print("bbox dmask: ", dmask_i)
                 idx_i = np.nonzero(dmask_i)[0]
                 if len(idx_i) != 2:
                     raise ValueError('Algorithm failed, {} does not have 2 elements!'.format(idx_i))
@@ -54,10 +52,8 @@ class Nodes:
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
                     marker = 1
-                print("x und y der obs für bbox: ", x, y)
                 #calculates the size of given object
-                enlarge = 0#self.ball_radius #to avoid hitting obstacles
-                print("enlage: ", enlarge)
+                enlarge = self.ball_radius #to avoid hitting obstacles
 
                 l = x - (x_size + enlarge)
                 r = x + x_size + 1 + enlarge
@@ -133,7 +129,6 @@ class Nodes:
                     i = i + 1
 
                 bbox = get_bounding_box(field2)
-                #print("fierld filled with obstacles", self.field_filled)
                 nodes.append(bbox)
             return nodes
 

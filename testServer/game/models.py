@@ -49,7 +49,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect  = load_image("game/img/ball.png", -1)
-        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.image = pygame.transform.scale(self.image, (30, 30))
 
         self.rect = self.image.get_rect()
         self.rect.center = pos
@@ -89,7 +89,7 @@ class Player(pygame.sprite.Sprite):
                 self.y = 0
 
 
-        # sinde rect.move only accepts ints but we also want to count 0.7 as force as well:
+        # sincde rect.move only accepts ints but we also want to count 0.7 as force as well:
         """
         hpx = self.xv
         if(0.1 < self.xv and 1.0 > self.xv):
@@ -139,7 +139,7 @@ class Target(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect  = load_image("game/img/target.png", -1)
         x, y = pos
-        self.image = pygame.transform.scale(self.image, (50,50))
+        self.image = pygame.transform.scale(self.image, (70,70))
         self.rect = self.image.get_rect()
         #self.rect.center = (1024 - x, 768 - y)
         self.rect.center = (x, y)
@@ -151,7 +151,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.image.fill([255,0,0])
         self.image.set_colorkey([0,0,0])
         self.rect = self.image.get_rect()
-        self.angle = math.radians(rotation)
+        self.angle = math.radians(rotation) ö
         x, y = pos
         #self.rect.center = (1024-x, 768-y)
         self.rect.center = (x, y)
