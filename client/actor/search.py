@@ -9,22 +9,25 @@ class Search:
         self.tar_onhold = 0
         self.nxt_mv = 0
 
-    #manhattan distance
+        # manhattan distance
+
     def heuristic(self, a, b):
         return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
 
-    #A*-search
-    def astar(self, array, start, goal):
-        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-        close_set = set()
-        came_from = {}
-        gscore = {start: 0}
-        fscore = {start: self.heuristic(start, goal)}
-        oheap = []
-        heappush(oheap, (fscore[start], start))
+        # A*-search
 
-        while oheap:
-            current = heappop(oheap)[1]
+    def astar(self, array, start, goal):
+        open_heap = []
+        came_from = {}
+        close_set = set()
+        gscore = {start: 0}
+        hscore = {start: self.heuristic(start, goal)}
+        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+
+        heappush(open_heap, (hscore[start], start))
+
+        while open_heap:
+            current = heappop(open_heap)[1]
             if current == goal:
                 data = []
 
@@ -36,7 +39,7 @@ class Search:
             close_set.add(current)
             for i, j in neighbors:
                 neighbor = current[0] + i, current[1] + j
-                tentative_g_score = gscore[current] + self.heuristic(current, neighbor)
+                tent_gscore = gscore[current] + self.heuristic(current, neighbor)
                 if 0 <= neighbor[0] < array.shape[0]:
                     if 0 <= neighbor[1] < array.shape[1]:
                         if array[neighbor[0]][neighbor[1]] == 1:
@@ -48,14 +51,65 @@ class Search:
                     # array bound x walls
                     continue
 
-                if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
+                if neighbor in close_set and tent_gscore >= gscore.get(neighbor, 1024):
                     continue
 
-                if tentative_g_score < gscore.get(neighbor, 0) or neighbor not in [i[1] for i in oheap]:
+                if tent_g_score < gscore.get(neighbor, 1024) or neighbor not in [i[1] for i in oheap]:
                     came_from[neighbor] = current
-                    gscore[neighbor] = tentative_g_score
-                    fscore[neighbor] = tentative_g_score + self.heuristic(neighbor, goal)
-                    heappush(oheap, (fscore[neighbor], neighbor))
+                    gscore[neighbor] = tent_gscore
+                    hscore[neighbor] = tent_gscore + self.heuristic(neighbor, goal)
+                    heappush(open_heap, (hscore[neighbor], neighbor))
+
+        return False
+
+    #manhattan distance
+    def heuristic(self, a, b):
+        return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+
+    #A*-search
+    def astar(self, array, start, goal):
+        open_heap = []
+        came_from = {}
+        close_set = set()
+        gscore = {start: 0}
+        hscore = {start: self.heuristic(start, goal)}
+        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+
+        heappush(open_heap, (hscore[start], start))
+
+        while open_heap:
+            current = heappop(open_heap)[1]
+            if current == goal:
+                data = []
+
+                while current in came_from:
+                    data.append(current)
+                    current = came_from[current]
+                return data
+
+            close_set.add(current)
+            for i, j in neighbors:
+                neighbor = current[0] + i, current[1] + j
+                tent_g_score = gscore[current] + self.heuristic(current, neighbor)
+                if 0 <= neighbor[0] < array.shape[0]:
+                    if 0 <= neighbor[1] < array.shape[1]:
+                        if array[neighbor[0]][neighbor[1]] == 1:
+                            continue
+                    else:
+                        # array bound y walls
+                        continue
+                else:
+                    # array bound x walls
+                    continue
+
+                if neighbor in close_set and tent_g_score >= gscore.get(neighbor, 1024):
+                    continue
+
+                if tent_g_score < gscore.get(neighbor, 1024) or neighbor not in [i[1] for i in oheap]:
+                    came_from[neighbor] = current
+                    gscore[neighbor] = tent_g_score
+                    hscore[neighbor] = tent_g_score + self.heuristic(neighbor, goal)
+                    heappush(open_heap, (hscore[neighbor], neighbor))
 
         return False
 
@@ -76,12 +130,10 @@ class Search:
 
     def go_for_target(self, ball_pos, radius):
         x_pos, y_pos = ball_pos
-        #x,y increased to avoid standing
         x_pos_int = int(x_pos)
         y_pos_int = int(y_pos)
         start = (x_pos_int, y_pos_int)
         r = radius
-        print("radius from ball", radius)
 
         #TODO replacing kdtree with calc of nearest target
         tree = spatial.KDTree(self.targets)
@@ -126,9 +178,7 @@ class Search:
             print("Target puttetd on hold after start = goal", self.tar_onhold)
             return 0, 0
         else:
-            print("x", start, goal)
             path = self.astar(self.field, start, goal)
-            print("path from search: ", path)
             step = 1
             if path == False:
                 path_len = path

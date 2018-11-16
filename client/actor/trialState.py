@@ -31,7 +31,7 @@ class TrialState:
         self.ball_radius = ball_radius
         self.ball = (ball_x, ball_y)# ball_z, ball_radius
 
-        #TODO handling of different behavior: adding param for 'perfectness' and include by seeing all obstacles
+        #TODO handling of different behavior: adding param for 'perfectness' and include to seeing all obstacles
         #returns the positions of obstacles.
         #visible_fac_val = {1. visible for player one, 2. visible for player two, 3. visible for both}
         def get_obstacles(obs_x, obs_y, obs_z, obs_x_size, obs_y_size, obs_z_size, obs_z_angle_deg, obs_slowdown_fac, visibility, geometric_type):

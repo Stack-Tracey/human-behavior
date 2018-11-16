@@ -151,7 +151,7 @@ class Obstacle(pygame.sprite.Sprite):
         self.image.fill([255,0,0])
         self.image.set_colorkey([0,0,0])
         self.rect = self.image.get_rect()
-        self.angle = math.radians(rotation) ö
+        self.angle = math.radians(rotation)
         x, y = pos
         #self.rect.center = (1024-x, 768-y)
         self.rect.center = (x, y)

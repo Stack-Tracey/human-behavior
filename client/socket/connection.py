@@ -5,6 +5,7 @@ from client.actor import game
 lab = '172.18.101.69'
 vbx = '192.168.56.101'
 localhorst = '127.0.0.1'
+
 stream = labViewConnector.LabViewConnector(localhorst, 1337) #u:
 game = game.Game(stream)
 
