@@ -55,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.start_pos = pos
         self.radius = self.rect.width/2
-        self.speed = 4 # TODO doese not seem to cause any effect besides standing on slowdown area
+        self.speed = 1 # TODO doese not seem to cause any effect besides standing on slowdown area
         self.x = self.y = 0
         self.xv = self.yv = 0
         self.targets = 0
@@ -63,46 +63,22 @@ class Player(pygame.sprite.Sprite):
         self.wait = 0
         self.tar = 0
         self.tar_onhold = 0
+        self.keys = {}
+        self.keys["K_DOWN"] = 0
+        self.keys["K_UP"] = 0
+        self.keys["K_RIGHT"] = 0
+        self.keys["K_LEFT"] = 0
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
     def update(self, events):
-        for event in events:
-                if event.type == KEYDOWN:
-                        if event.key == K_LEFT:
-                                self.xv += -1 * self.speed
-                        elif event.key == K_RIGHT:
-                                self.xv += 1 * self.speed
-                        elif event.key == K_UP:
-                                self.yv += -1 * self.speed
-                        elif event.key == K_DOWN:
-                                self.yv += 1 * self.speed
-                elif event.type == KEYUP:
-                        if event.key in (K_LEFT, K_RIGHT):
-                                self.x = self.x
-                        elif event.key in (K_UP, K_DOWN):
-                                self.y = self.y
         if self.x and not self.screenrect.contains(self.rect.move(self.x, 0)):
                 self.x = 0
         if self.y and not self.screenrect.contains(self.rect.move(0, self.y)):
                 self.y = 0
 
 
-        # sincde rect.move only accepts ints but we also want to count 0.7 as force as well:
-        """
-        hpx = self.xv
-        if(0.1 < self.xv and 1.0 > self.xv):
-            hpx = 1
-        else:
-            hpx = self.xv
-
-        hpy = self.yv
-        if (0.1 < self.yv and 1.0 > self.yv):
-            hpy = 1
-        else:
-            hpy = self.yv
-        """
         self.rect.move_ip(round(self.xv), round(self.yv))
         # langsam werden des balles(ausrollen) overall speed
         self.xv = self.xv * 0.3 #0.96
@@ -120,6 +96,11 @@ class Player(pygame.sprite.Sprite):
         if self.rect.y > self.screenrect.height - self.rect.height:
             self.yv = self.yv * (-1)
 
+        if (abs(self.yv) < 0.01):
+            self.yv = 0
+        if (abs(self.xv) < 0.01):
+            self.xv = 0
+
     def reset_position(self):
         self.rect.center = self.start_pos
         self.xv = self.yv = 0
@@ -128,10 +109,20 @@ class Player(pygame.sprite.Sprite):
         self.xv = self.xv * 0.8
         self.yv = self.yv * 0.8
 
+    def applyKeys(self):
+        if self.keys["K_RIGHT"]:
+            self.applyForces(1, 0)
+        if self.keys["K_LEFT"]:
+            self.applyForces(-1, 0)
+        if self.keys["K_UP"]:
+            self.applyForces(0, -1)
+        if self.keys["K_DOWN"]:
+            self.applyForces(0, 1)
+
     # adding forces of client
     def applyForces(self, x, y):
-        self.xv = self.xv + x
-        self.yv = self.yv + y
+        self.xv = self.xv + x * self.speed
+        self.yv = self.yv + y * self.speed
 
 
 class Target(pygame.sprite.Sprite):
