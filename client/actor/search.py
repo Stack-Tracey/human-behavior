@@ -8,6 +8,10 @@ class Search:
         self.targets = targets
         self.tar_onhold = 0
         self.nxt_mv = 0
+        self.counter = 19
+        self.path = False
+
+
 
         # manhattan distance
 
@@ -72,10 +76,13 @@ class Search:
         came_from = {}
         close_set = set()
         gscore = {start: 0}
+        print("gscore: ", gscore)
         hscore = {start: self.heuristic(start, goal)}
+        print("hsocore: ", hscore)
         neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
         heappush(open_heap, (hscore[start], start))
+        print("open_heap :", open_heap)
 
         while open_heap:
             current = heappop(open_heap)[1]
@@ -105,7 +112,7 @@ class Search:
                 if neighbor in close_set and tent_g_score >= gscore.get(neighbor, 1024):
                     continue
 
-                if tent_g_score < gscore.get(neighbor, 1024) or neighbor not in [i[1] for i in oheap]:
+                if tent_g_score < gscore.get(neighbor, 1024) or neighbor not in [i[1] for i in open_heap]:
                     came_from[neighbor] = current
                     gscore[neighbor] = tent_g_score
                     hscore[neighbor] = tent_g_score + self.heuristic(neighbor, goal)
@@ -178,7 +185,16 @@ class Search:
             print("Target puttetd on hold after start = goal", self.tar_onhold)
             return 0, 0
         else:
-            path = self.astar(self.field, start, goal)
+            # print("x", start, goal)
+            self.counter += 1
+            if self.counter == 20:
+                self.path = self.astar(self.field, start, goal)
+                self.counter = 0
+                path = self.path
+                # pdb.Pdb().set_trace()
+            else:
+                path = self.path
+            # print("path from search: ", path)
             step = 1
             if path == False:
                 path_len = path
@@ -186,14 +202,22 @@ class Search:
                 path_len = path.__len__()
 
             if path_len >= step:
-                index = path_len - step
-                nxt_mv = path[index]
-                print("next move starter position 1", nxt_mv)
+                # index = path_len - step
+                # nxt_mv = path[index]
+                nxt_mv_ok = False
+                while (not nxt_mv_ok):
+                    nxt_mv = self.path.pop()
+                    # if(self.heuristic(nxt_mv, goal) < self.heuristic(start, goal)):
+                    if (nxt_mv != start):
+                        nxt_mv_ok = True
+                if (self.path.__len__() <= 30):
+                    self.counter = 19
+                # print("next move starter position 1", nxt_mv)
             elif path_len == False:
                 return 0, 0
-            else:
-                nxt_mv = path.pop()
-                print("next move starter position", nxt_mv)
+            # else:
+            #   nxt_mv = path.pop()
+            # print("next move starter position", nxt_mv)
 
             self.nxt_mv = nxt_mv
             x, y = self.resp_normalized(start, nxt_mv)  # self
