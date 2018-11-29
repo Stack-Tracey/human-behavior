@@ -1,4 +1,5 @@
 import labViewConnector
+import sys
 from client.actor import game
 #import pygame
 
@@ -43,7 +44,31 @@ def get_data(stream):
             print("overhead has been used---------------------------------------------------------------")
             print(frame)
 
-    get_data(stream)
 
-get_data(stream)
+if "profile" in sys.argv:
+    import hotshot
+    import hotshot.stats
+    import tempfile
+    import os
+
+    print("TEst")
+    profile_data_fname = tempfile.mktemp("prf")
+    prof = hotshot.Profile(profile_data_fname)
+    prof.run('get_data(stream)')
+    del prof
+    s = hotshot.stats.load(profile_data_fname)
+    s.strip_dirs()
+    print("cumulative\n\n")
+    s.sort_stats('cumulative').print_stats()
+    print("By time.\n\n")
+    s.sort_stats('time').print_stats()
+    del s
+    # clean up the temporary file name.
+    try:
+        os.remove(profile_data_fname)
+    except:
+        # may have trouble deleting ;)
+        pass
+else:
+    get_data(stream)
 stream.close()
