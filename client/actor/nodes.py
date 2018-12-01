@@ -79,7 +79,6 @@ class Nodes:
 
                 #adds object to field
                 field[l:r, u:o] = marker
-                print("eingezeichnete obstacles: ", l, " bis ", r, " und ", u, " bis ", o)
 
                 #substracts x_center / y_center from objects and stores them in matrix
                 idx_1 = np.nonzero(field)

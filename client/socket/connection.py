@@ -1,15 +1,15 @@
 import labViewConnector
 import sys
 from client.actor import game
-#import pygame
 
 lab = '172.18.101.69'
 vbx = '192.168.56.101'
 localhorst = '127.0.0.1'
 
-stream = labViewConnector.LabViewConnector(localhorst, 1337) #u:
+stream = labViewConnector.LabViewConnector(localhorst, 1337):
 game = game.Game(stream)
 
+#handles incomming frames according to their types
 def get_data(stream):
     x = True
     #clock = pygame.time.Clock()
@@ -51,7 +51,7 @@ if "profile" in sys.argv:
     import tempfile
     import os
 
-    print("TEst")
+    print("Test")
     profile_data_fname = tempfile.mktemp("prf")
     prof = hotshot.Profile(profile_data_fname)
     prof.run('get_data(stream)')

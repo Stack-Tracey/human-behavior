@@ -11,15 +11,11 @@ class Search:
         self.counter = 19
         self.path = False
 
-
-
-        # manhattan distance
-
+    #L1-norm manhattan distance as heuristik for astar
     def heuristic(self, a, b):
         return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
 
-        # A*-search
-
+    #A*-search
     def astar(self, array, start, goal):
         open_heap = []
         came_from = {}
@@ -76,13 +72,10 @@ class Search:
         came_from = {}
         close_set = set()
         gscore = {start: 0}
-        print("gscore: ", gscore)
         hscore = {start: self.heuristic(start, goal)}
-        print("hsocore: ", hscore)
         neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
         heappush(open_heap, (hscore[start], start))
-        print("open_heap :", open_heap)
 
         while open_heap:
             current = heappop(open_heap)[1]
