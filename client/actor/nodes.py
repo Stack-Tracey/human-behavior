@@ -30,11 +30,12 @@ class Nodes:
 
         def get_nodes(objects):
             nodes = []
+            print("objects", objects)
             for obj in objects:
                 x = y = z = x_size = y_size = z_size = radius = z_angle_deg = slowdown_fac = visibility = geometric_type = 0
                 field = np.zeros([self.field_x_size, self.field_y_size])
                 field2 = np.zeros([self.field_x_size, self.field_y_size])
-                global marker
+                marker = 0
 
                 #initialises values according to object type: obs or tar
                 if len(obj) < 7:
@@ -44,14 +45,14 @@ class Nodes:
                     x_size = round(radius / 2)
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
-                    marker = 2
+                    marker += 2
                 else:
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
 
                     x_size = round(x_size / 2)
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
-                    marker = 1
+                    marker += 1
                 #calculates the size of given object
                 enlarge = self.ball_radius #to avoid hitting obstacles
 
