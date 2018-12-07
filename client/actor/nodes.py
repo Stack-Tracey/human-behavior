@@ -30,7 +30,6 @@ class Nodes:
 
         def get_nodes(objects):
             nodes = []
-            print("objects", objects)
             for obj in objects:
                 x = y = z = x_size = y_size = z_size = radius = z_angle_deg = slowdown_fac = visibility = geometric_type = 0
                 field = np.zeros([self.field_x_size, self.field_y_size])

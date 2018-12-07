@@ -1,68 +1,21 @@
 import numpy as np
-from heapq import *
-from scipy import spatial
+import client.actor.trialState as tS
+#from scipy import spatial
 
 class Search:
     def __init__(self, field, targets):
         self.field = field
         self.targets = targets
+        self.star = tS.StarPath(self.targets, (0,0), self.field)
         self.tar_onhold = 0
-        self.nxt_mv = 0
-        self.counter = 19
-        self.path = False
 
-    #L1-norm manhattan distance as heuristik for astar
-    def heuristic(self, a, b):
-        return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+        self.nxt_mv = None
+        self.path = None
+        self.behavoir = "default"
+        self.reverse = False
 
-    #A*-search
-    def astar(self, array, start, goal):
-        open_heap = []
-        came_from = {}
-        close_set = set()
-        gscore = {start: 0}
-        hscore = {start: self.heuristic(start, goal)}
-        neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-        heappush(open_heap, (hscore[start], start))
-
-        while open_heap:
-            current = heappop(open_heap)[1]
-            if current == goal:
-                data = []
-
-                while current in came_from:
-                    data.append(current)
-                    current = came_from[current]
-                return data
-
-            close_set.add(current)
-            for i, j in neighbors:
-                neighbor = current[0] + i, current[1] + j
-                tent_g_score = gscore[current] + self.heuristic(current, neighbor)
-                if 0 <= neighbor[0] < array.shape[0]:
-                    if 0 <= neighbor[1] < array.shape[1]:
-                        if array[neighbor[0]][neighbor[1]] == 1:
-                            continue
-                    else:
-                        # array bound y walls
-                        continue
-                else:
-                    # array bound x walls
-                    continue
-
-                if neighbor in close_set and tent_g_score >= gscore.get(neighbor, 1024):
-                    continue
-
-                if tent_g_score < gscore.get(neighbor, 1024) or neighbor not in [i[1] for i in open_heap]:
-                    came_from[neighbor] = current
-                    gscore[neighbor] = tent_g_score
-                    hscore[neighbor] = tent_g_score + self.heuristic(neighbor, goal)
-                    heappush(open_heap, (hscore[neighbor], neighbor))
-
-        return False
-
-    #returns force on ball normalized to [-1, 1]
+    """#returns force on ball normalized to [-1, 1]
     def resp_normalized(self, start, goal):
         x_s, y_s = start
         x_g, y_g = goal
@@ -77,23 +30,21 @@ class Search:
 
         return x_rn, y_rn
 
+    """
 
+    """
+     samples points along a line from point A= checkpoint to point B = current_point_next at a certain granularity
+     (typically we use one-fifth of a tile width), checking at each point whether the unit overlaps
+     any neighboring blocked tile. (Using the width of the unit, it checks the four points in a diamond pattern
+      around the unit's center.) The function returns true if it encounters no blocked tiles and false otherwise
+    :param check_point:
+    :param current_point_next:
+    :return:
+    """
 
-        """
-         samples points along a line from point A= checkpoint to point B = current_point_next at a certain granularity
-         (typically we use one-fifth of a tile width), checking at each point whether the unit overlaps
-         any neighboring blocked tile. (Using the width of the unit, it checks the four points in a diamond pattern
-          around the unit's center.) The function returns true if it encounters no blocked tiles and false otherwise
-        :param check_point:
-        :param current_point_next:
-        :return:
-        """
-
-        """
-
-        """
     def walkable(self, a, b):
-        print("a, b", a, b)
+        print("walkable : a, b", a, b, "############################################################WALKABLE")
+
         x_a, y_a = a
         x_b, y_b = b
         x_max = max(x_a, x_b)
@@ -118,83 +69,78 @@ class Search:
 
                     else:
                         y_flag = False
-                        print("first 1 xa ya xb yb", x_a, y_a, x_b, y_b)
                         y_a -= 1
                     if self.field[[x_a],[y_a]] == 1:
                         return False
+            print(" a!=b", x_a, y_a, x_b, y_b)
 
             x_flag = y_flag = True
 
             if x_a != x_b and y_a == y_b:
-                print("second xa != xb")
 
                 while x_a != x_b:
-                    print("entered while")
+
                     if x_max > x_a and x_flag:
-                        print("second 2 xa ya xb yb", x_a, y_a, x_b, y_b)
 
                         while x_a < x_b:
                             x_a += 1
-                            print("second 3 xa ya xb yb", x_a, y_a, x_b, y_b)
+
                             if self.field[[x_a], [y_a]] == 1:
                                 return False
 
                         while x_a > x_b:
                             x_a -= 1
-                            print("second 3 xa ya xb yb", x_a, y_a, x_b, y_b)
+
                             if self.field[[x_a], [y_a]] == 1:
                                 return False
 
                     else:
                         x_flag = False
-                        print("second 4 xa ya xb yb", x_a, y_a, x_b, y_b)
 
                         while x_a > x_b:
                             x_a -= 1
-                            print("second 5 xa ya xb yb", x_a, y_a, x_b, y_b)
                             if self.field[[x_a], [y_a]] == 1:
-                                print("second 2 xa ya xb yb", x_a, y_a, x_b, y_b)
                                 return False
-
+            print(" ax!=bx ay==by", x_a, y_a, x_b, y_b)
             y_flag = True
 
             if x_a == x_b and y_a != y_b:
-                print("third ya != yb")
+
                 while y_a != y_b:
+                    print("ax == bx ay!=by", x_a, y_a, x_b, y_b)
 
                     if y_max > y_a and y_flag:
 
                         while y_a < y_b:
                             y_a += 1
+                            print("ax == bx ay!=by", x_a, y_a, x_b, y_b)
 
                             if self.field[[x_a], [y_a]] == 1:
-                                print("third 1 xa ya xb yb", x_a, y_a, x_b, y_b)
                                 return False
 
                         while y_a > y_b:
                             y_a -= 1
+                            print("ax == bx ay!=by", x_a, y_a, x_b, y_b)
+
                             if self.field[[x_a], [y_a]] == 1:
-                                print("third 2 xa ya xb yb", x_a, y_a, x_b, y_b)
                                 return False
                     else:
                         y_flag = False
 
                         while y_a > y_b:
                             y_a -= 1
-                            print("third 2 xa ya xb yb", x_a,y_a, x_b, y_b)
+
                             if self.field[[x_a], [y_a]] == 1:
                                 return False
+
+                print("ax == bx ay!=by", x_a, y_a, x_b, y_b)
         return True
 
+    """
     #calculates next step and returns response values for server in shape of an 2D force vector.
     def go_for_target(self, ball_pos, radius):
-        print("reached go for target")
-        """
+        print("############################################################GO FOR TARGET")
 
-        :param ball_pos:
-        :param radius:
-        :return:
-        """
         x_pos, y_pos = ball_pos
         x_pos_int, y_pos_int = int(x_pos), int(y_pos)
         start = (x_pos_int, y_pos_int)
@@ -206,9 +152,7 @@ class Search:
 
         index = tree.query([start])[1][0]
         goal = self.targets[index]
-        print("index and goal from go for target", index, goal)
-
-        nxt_mv = self.nxt_mv
+        print("goal", goal)
 
         x, y = goal
         a = (x - r, y - r)
@@ -228,10 +172,18 @@ class Search:
         h_x, h_y = h
         # g <= start <= h
         start_x, start_y = start
+        nxt_x, nxt_y = self.nxt_mv
+        print("next mv", self.nxt_mv)
+
+        if ((((nxt_x + 1),(nxt_y + 1)) == goal or ((nxt_x - 1),(nxt_y - 1)) == goal)) and start != goal and start != self.nxt_mv:
+            while start != goal and start != self.nxt_mv:
+                x, y = self.resp_normalized(start, self.nxt_mv)
+                print("response1", x, y, self.nxt_mv)
+                return x, y
 
         #Checks every edgecase of a target collision. Adds prior collected target from
         #tar_onhold and removes collected target, from targets.
-        if start == goal or nxt_mv == goal or c <= start <= d and e <= start <= f or g_x <= start_x <= h_x and h_y <= start_y <= g_y and a_x <= start_x <= b_x and a_y <= start_y <= b_y:
+        elif start == goal or ((nxt_x + 1),(nxt_y + 1)) == goal or ((nxt_x - 1),(nxt_y - 1)) == goal or c <= start <= d and e <= start <= f or g_x <= start_x <= h_x and h_y <= start_y <= g_y and a_x <= start_x <= b_x and a_y <= start_y <= b_y:
             self.targets.pop(index)
 
             if self.tar_onhold != 0:
@@ -239,7 +191,6 @@ class Search:
 
             self.tar_onhold = goal
             return 0, 0
-######################################################################################################################
         #If no target was hit, increase counter to calculate astar
         else:
             self.counter += 1
@@ -262,74 +213,87 @@ class Search:
             else:
                 path_len = self.path.__len__()
 
+            if self.nxt_mv == goal:
+                nxt_mv_ok = True
+
             #If path is longer than next step, get next element from path as long as next_mv is unequal to start position.
             #And if path length ist < 30, set counter to 19.
             if path_len >= step:
                 nxt_mv_ok = False
-
+######################################################################################################################
+                current_point = []
                 while (not nxt_mv_ok):
                     #nxt_mv = self.path.pop() #TODO replacing pop() operation by a more complex function
 
-                    """
-                                 #Pseudocode
-                                 #for smoothing algorithm.The smoothing algorithm simply checks from waypoint to waypoint along the path, trying to eliminate intermediate waypoints when possible.
-
-                                checkPoint = starting point of path
-                                currentPoint = next point in path
-                                while (currentPoint->next != NULL)
-                                    if Walkable(checkPoint, currentPoint->next)
-                                         // Make a straight path between those points:
-                                temp = currentPoint
-                                currentPoint = currentPoint->next
-                                delete temp from the path
-                                else
-                                checkPoint = currentPoint
-                                currentPoint = currentPoint->next
-                    """
-
-                    cond = self.path.__len__()
-                    while cond != 3:
-                        print("condition", cond)
+                    self.cond = self.path.__len__()
+                    while self.cond != 3:
+                        print("condition", self.cond)
                         print("parth", self.path)
                         check_point = self.path[-1]
                         current_point = self.path[-2]
                         current_point_next = self.path[-3]
+
                         print("checkpoin, current point. current next", check_point, current_point, current_point_next)
                         print("length of parth", self.path.__len__())
 
-
-                        if self.walkable(check_point, current_point_next):
-
-                            #current_point = current_point_next
-                            print("after walkable true")
+                        while self.walkable(check_point, current_point_next) and self.cond != 3:
 
                             x = self.path.pop(-2)
                             current_point_next = self.path[-3]
                             current_point = self.path[-2]
-                            cond -= 1
+                            self.cond -= 1
                             print("smothing pop", x)
-                        else:
-                            cond = 3
-                            if start == current_point:
-                                self.path = self.astar(self.field, start, goal)
-                            print("cont bottom", cond)
-                            #print("nxt mv = current pint", current_point)
-                        nxt_mv = current_point
 
-
-                    if (nxt_mv != start):
+                        self.cond = 3
+                        print("walkable false")
+                        if start == current_point:
+                            self.path = self.astar(self.field, start, goal)
+                        self.nxt_mv = current_point
+                        print("nxt mv 2", self.nxt_mv)
+#######################################################################################################################
+                    self.nxt_mv = current_point
+                    if self.nxt_mv != start:
                         nxt_mv_ok = True
 
-                if (self.path.__len__() <= 30):
+                if self.path.__len__() <= 30:
                     self.counter = 19
-#######################################################################################################################
+
             #Otherwise if path lenght is 0, return no force(0, 0)
             elif path_len == False:
                 return 0, 0
 
-            self.nxt_mv = nxt_mv
-            x, y = self.resp_normalized(start, nxt_mv)
+            #self.nxt_mv = nxt_mv
+            x, y = self.resp_normalized(start, self.nxt_mv)
             print("response", x, y, self.nxt_mv)
             return x, y
+    """
+    def go_for_target(self, ball_pos, radius):
+        #import pdb
+        #pdb.Pdb().set_trace()
+        ball_pos = tS.Point(None, ball_pos)
 
+        # Default behavoir is an example of the new StarPath-class
+        # it follows a pre-calculated astar path.
+        # if the end is reached, it revers back again
+        if self.behavoir == "default":
+            if self.path is None:
+                #self.path = self.star.getShortestPath() # works like a charm
+                #self.path = self.star.getLongestPath() # looks weird but works, give it a bit time
+                self.path = self.star.paths[3] # looks a bit less weird but works, give it a bit time
+                #self.path = self.star.getShortestPath().getSimplePath()
+                self.nxt_mv = self.path.getFirstPoint()
+                return (self.nxt_mv - ball_pos).norm()
 
+            if ball_pos.inRange(radius,self.nxt_mv):
+                if not self.reverse:
+                    self.nxt_mv = self.nxt_mv.next()
+                    if self.nxt_mv is None:
+                        self.reverse = not self.reverse
+                        self.nxt_mv = self.path.getLastPoint()
+                else:
+                    self.nxt_mv = self.nxt_mv.prior()
+                    if self.nxt_mv is None:
+                        self.reverse = not self.reverse
+                        self.nxt_mv = self.path.getFirstPoint()
+
+            return (self.nxt_mv - ball_pos).norm()

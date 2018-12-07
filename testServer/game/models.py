@@ -55,7 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.start_pos = pos
         self.radius = self.rect.width/2
-        self.speed = 1 # TODO doese not seem to cause any effect besides standing on slowdown area
+        self.speed = 1
         self.x = self.y = 0
         self.xv = self.yv = 0
         self.targets = 0
@@ -111,13 +111,13 @@ class Player(pygame.sprite.Sprite):
 
     def applyKeys(self):
         if self.keys["K_RIGHT"]:
-            self.applyForces(1, 0)
+            self.applyForces(3, 0)
         if self.keys["K_LEFT"]:
-            self.applyForces(-1, 0)
+            self.applyForces(-3, 0)
         if self.keys["K_UP"]:
-            self.applyForces(0, -1)
+            self.applyForces(0, -3)
         if self.keys["K_DOWN"]:
-            self.applyForces(0, 1)
+            self.applyForces(0, 3)
 
     # adding forces of client
     def applyForces(self, x, y):

@@ -114,7 +114,6 @@ class Game:
 
         x, y = self.search.go_for_target((p1_x, p1_y), self.trial.ball_radius)
 
-        print("response: ", x, y)
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
