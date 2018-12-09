@@ -1,7 +1,13 @@
 import pygame
 from testServer.game import models
 from testServer.game import gameServer
-
+"""
+1) Der Ball kann beschleunigt werden. Es macht einen Unterschied, ob ich zu einem nahen Punkt steuere
+    oder einen Vollausschlag habe weil straight nach oben gelenkt wird.
+2) Der Ball besitzt Trägheit, dh er kann keine scharfen Kurven fahren. Je höher die Geschwindigkeit,
+    desdo höher der Radius der entsteht, wenn um eine Kurve gefahren wird.
+    
+"""
 class Game():
     def __init__(self, screen, port):
         self.screen = screen

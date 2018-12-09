@@ -6,7 +6,7 @@ class Search:
     def __init__(self, field, targets):
         self.field = field
         self.targets = targets
-        self.star = tS.StarPath(self.targets, (0,0), self.field)
+        self.star = tS.StarPath(self.targets, self.field)
         self.tar_onhold = 0
 
         self.nxt_mv = None
@@ -267,33 +267,118 @@ class Search:
             print("response", x, y, self.nxt_mv)
             return x, y
     """
-    def go_for_target(self, ball_pos, radius):
-        #import pdb
-        #pdb.Pdb().set_trace()
+    def go_for_target(self, ball_pos, ball_force, radius):
         ball_pos = tS.Point(None, ball_pos)
+        fx, fy = ball_force
 
         # Default behavoir is an example of the new StarPath-class
         # it follows a pre-calculated astar path.
         # if the end is reached, it revers back again
         if self.behavoir == "default":
+            def slowDown():
+                x, y = (self.nxt_mv - ball_pos).norm()
+                if fx > 1:
+                    x = -0.35
+                if fx < -1:
+                    x = 0.35
+                if fy > 1:
+                    y = -0.35
+                if fy < -1:
+                    y = 0.35
+                return (x, y)
+
             if self.path is None:
-                #self.path = self.star.getShortestPath() # works like a charm
+                #self.path = self.star.getShortestPath().smoothPath # works like a charm
                 #self.path = self.star.getLongestPath() # looks weird but works, give it a bit time
-                self.path = self.star.paths[3] # looks a bit less weird but works, give it a bit time
+                self.path = self.star.paths[1].smoothPath # looks a bit less weird but works, give it a bit time
+                #import pdb
+                #pdb.Pdb().set_trace()
                 #self.path = self.star.getShortestPath().getSimplePath()
-                self.nxt_mv = self.path.getFirstPoint()
+                self.nxt_mv = self.path.getLastPoint()
+                self.reverse = False
                 return (self.nxt_mv - ball_pos).norm()
 
-            if ball_pos.inRange(radius,self.nxt_mv):
+            # 35 -> Target size!
+            # reached nxt_mv? Fetch the new nxt_mv and slowDown because in smoothPath/simplepath, every point is a corner
+            # if there is no next mv, reverse direction!
+            if ball_pos.inRange(radius+10,self.nxt_mv):
                 if not self.reverse:
                     self.nxt_mv = self.nxt_mv.next()
                     if self.nxt_mv is None:
                         self.reverse = not self.reverse
                         self.nxt_mv = self.path.getLastPoint()
+                    else:
+                        slowDown()
                 else:
                     self.nxt_mv = self.nxt_mv.prior()
                     if self.nxt_mv is None:
                         self.reverse = not self.reverse
                         self.nxt_mv = self.path.getFirstPoint()
+                    else:
+                        slowDown()
+
+            # if the ball misses a mv but the ball is still on the path: jump to next mv
+            # TODO ADD CHECK IF OBSTACLE IS IN THE WAY
+            if not self.reverse:
+                while self.nxt_mv is not None and ball_pos.dist(self.path.getLastPoint()) < self.nxt_mv.dist(self.path.getLastPoint()):
+                    self.nxt_mv = self.nxt_mv.next()
+            else:
+                while self.nxt_mv is not None and ball_pos.dist(self.path.getFirstPoint()) < self.nxt_mv.dist(self.path.getFirstPoint()):
+                    self.nxt_mv = self.nxt_mv.prior()
+
+            # if the ball lost its path but the target is in clear sight:
+            if tS.walkable(self.field, ball_pos, self.path.getFirstPoint() if self.reverse else self.path.getLastPoint()):
+                self.nxt_mv = self.path.getFirstPoint() if self.reverse else self.path.getLastPoint()
+
+            # if near target, slowdown!
+            if ball_pos.inRange(140, self.path.getFirstPoint() if self.reverse else self.path.getLastPoint()) and (abs(fx) > 1 or abs(fy) > 1):
+                slowDown()
 
             return (self.nxt_mv - ball_pos).norm()
+        """
+        if self.behavoir == "explorer":
+            bewegt sich über das ganze Spielfeld und probiert verschiedene Pfade aus.
+            
+        if self.behavoir == "best performance":
+            nimmt immer wieder den am vielversprechendsten Pfad. Dieses kann ein besonders
+            kurzer Pfad sein oder ein besonders leicht abzufahrender Pfad, da jedes obstacle 
+            collision minuspunkte bedeutet und der Ball schwer zu navigieren ist. 
+            
+        if self.behavoir == "ignorant":
+            nimmt keine Rücksicht auf den gegenspieler, macht nur sein eigenes Ding(evtl einfach
+            default behavior?)
+            
+        if self.behavoir == "follower":
+            ist gänzlich passiv. sollte jedoch input liefern falls der Gegenspieler nichts mehr 
+            macht, damit der Spieler nicht denk dass niemand mit spielt.
+            
+     Das hier sind die Endtypen die sich aus den anderen zusammensetzen
+            
+        if self.behavoir == "learning-following-explorer": 
+            Mischung aus explorer, best performance und follower. Sollte sämtliche Pfade ausprobieren und
+            dabei 'lernen' den daraus resultierenden besten Pfad immer wieder zu benutzen. Beim
+            exploren versucht er auch heraus zu finden , wo die Hindernisse beim Gegenspieler 
+            liegen. 
+            
+        if self.behavior == "learning-ignorant-explorer":
+            Mischung aus explorer, best performance und ignorant. Sollte sämtliche Pfade ausprobieren und
+            dabei 'lernen' den daraus resultierenden besten Pfad immer wieder zu benutzen. Beim
+            exploren versucht er nicht heraus zu finden wo die Hindernisse beim Gegenspieler
+            liegen, sondern findet nur seinen optimalen Pfad unabhängig vom Gegenüber.
+            
+        if self.behavior == "best perfomance-ignorant":
+            nimmt immer wieder den am vielversprechendsten Pfad. Dieses kann ein besonders
+            kurzer Pfad sein oder ein besonders leicht abzufahrender Pfad, da jedes obstacle 
+            collision minuspunkte bedeutet und der Ball schwer zu navigieren ist. Er ignoriert
+            dabei, dass er noch einen Gegenspieler hat.
+                 
+        
+        if self.behavior == "best perfomance-follower": 
+            nimmt immer wieder den am vielversprechendsten Pfad. Dieses kann ein besonders
+            kurzer Pfad sein oder ein besonders leicht abzufahrender Pfad, da jedes obstacle 
+            collision minuspunkte bedeutet und der Ball schwer zu navigieren ist. Er bemerkt
+            wenn auf seinem Idealen Pfad unsichtbare Hindernisse liegen und ändert ihn gebenen
+            falls. Wenn ihn der gegenspieler gänzlich von seinem Erfolgspfad abbringt, folgt
+            er ihm bis er wieder in die Nähe von seinem Erfolgspfad kommt.
+        
+        """

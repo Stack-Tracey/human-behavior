@@ -55,8 +55,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.start_pos = pos
         self.radius = self.rect.width/2
-        self.speed = 1
-        self.x = self.y = 0
+        self.speed = 0.6
+        self.x, self.y = pos
         self.xv = self.yv = 0
         self.targets = 0
         self.screenrect = pygame.display.get_surface().get_rect()
@@ -73,16 +73,14 @@ class Player(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def update(self, events):
-        if self.x and not self.screenrect.contains(self.rect.move(self.x, 0)):
-                self.x = 0
-        if self.y and not self.screenrect.contains(self.rect.move(0, self.y)):
-                self.y = 0
+        self.x += self.xv
+        self.y += self.yv
+        tx, ty = self.rect.center
+        self.rect.move_ip(round(self.x-tx), round(self.y - ty))
 
-
-        self.rect.move_ip(round(self.xv), round(self.yv))
-        # langsam werden des balles(ausrollen) overall speed
-        self.xv = self.xv * 0.3 #0.96
-        self.yv = self.yv * 0.3 #0.96
+        # langsam werden des balles(ausrollen)
+        self.xv = self.xv * 0.90
+        self.yv = self.yv * 0.90
 
         if self.rect.x < 0:
             self.xv = self.xv * (-1)
@@ -96,9 +94,9 @@ class Player(pygame.sprite.Sprite):
         if self.rect.y > self.screenrect.height - self.rect.height:
             self.yv = self.yv * (-1)
 
-        if (abs(self.yv) < 0.01):
+        if (abs(self.yv) < 0.0001):
             self.yv = 0
-        if (abs(self.xv) < 0.01):
+        if (abs(self.xv) < 0.0001):
             self.xv = 0
 
     def reset_position(self):

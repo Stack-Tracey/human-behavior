@@ -28,8 +28,8 @@ def mainLoop(Game):
     RUN = True
     while RUN:
         receive = Game.server.receive_fr()
-        p1_fx = round(receive["Frame Data"]["X"]) #0.334566544444
-        p1_fy = round(receive["Frame Data"]["Y"]) #0.334566544444
+        p1_fx = receive["Frame Data"]["X"] #0.334566544444
+        p1_fy = receive["Frame Data"]["Y"] #0.334566544444
         Game.player.applyForces(p1_fx, p1_fy)
 
         events = pygame.event.get()
@@ -58,6 +58,7 @@ def mainLoop(Game):
 
         pos = Game.player.rect.center
         Game.server.p1_x, Game.server.p1_y = Game.server.p2_x, Game.server.p2_y = pos
+        Game.server.p1_fx, Game.server.p1_fy = Game.player.xv, Game.player.yv
         Game.server.updateFrame()
         Game.server.send_fr(Game.server.frame)
 
