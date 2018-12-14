@@ -12,21 +12,30 @@ def main():
 
     for pos in ((512, 691), (246, 230), (778, 230), (512, 384)):
         Game.addTarget(pos)
-    for opt in (
-        [(512, 445), -90], [(459, 353), -210], [(725, 261), -330], [(420, 544), -20], [(328, 384), -100], [(420, 224), -80],
-        [(512, 77), -180], [(604, 544), -280], [(778, 538), -300]):
-        Game.addObstacle(opt[0], opt[1])
 
     Game.server.waitForClient()
-    Game.server.send_fr(Game.server.trial_def)
-    Game.server.send_fr(Game.server.frame)
-    mainLoop(Game)
+
+    RUN = True
+    while RUN:
+        print("Build trial")
+        obstacles = models.genObstacles(9)
+        for obt in obstacles["obj"]:
+            Game.addObstacle(obt)
+
+        Game.server.trial_def["Level Data"]["Obstacles"] = obstacles["Obstacles"]
+        Game.server.trial_def["Level Data"]["Nr of Obstacles"] = len(obstacles["obj"])
+        Game.server.send_fr(Game.server.trial_def)
+        Game.server.send_fr(Game.server.frame)
+        RUN = mainLoop(Game)
+        Game.obstacles = pygame.sprite.Group()
 
 
 def mainLoop(Game):
+    print("Running mainloop")
     #pdb.Pdb().set_trace()
+    countermax = 300
     RUN = True
-    while RUN:
+    while countermax > 0:
         receive = Game.server.receive_fr()
         p1_fx = receive["Frame Data"]["X"] #0.334566544444
         p1_fy = receive["Frame Data"]["Y"] #0.334566544444
@@ -35,7 +44,7 @@ def mainLoop(Game):
         events = pygame.event.get()
         for event in events:
             if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
-                RUN = False
+                return False
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     Game.player.keys["K_LEFT"] = 1
@@ -66,6 +75,8 @@ def mainLoop(Game):
         Game.draw(p1_fx, p1_fy)
         pygame.display.flip()
         Game.clock.tick(30)
+        countermax -= 1
+    return True
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ class Nodes:
         self.ball = ball
         self.ball_radius = radius
         self.field_x_size = 1024 #1025
-        self.field_y_size = 769 #770
+        self.field_y_size = 768 #769
         self.tile_size = self.field_x_size / 4
         self.field_filled = np.zeros([self.field_x_size, self.field_y_size], dtype=object)
 
@@ -80,7 +80,7 @@ class Nodes:
                 #adds object to field
                 field[l:r, u:o] = marker
 
-                #substracts x_center / y_center from objects and stores them in matrix
+                #substracts x_center / y_center from object and stores it in matrix
                 idx_1 = np.nonzero(field)
                 min_x_cent = []
                 min_y_cent = []

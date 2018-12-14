@@ -35,6 +35,7 @@ class Game:
         ball_data = level_data['Ball']
         obstacle_data = level_data['Obstacles']
 
+
         tar_z = target_data['Z']
         tar_y = target_data['Y']
         tar_x = target_data['X']

@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 
 from pygame.locals import *
 
@@ -44,7 +45,66 @@ def circRotatedRectCollide(circ, rect):
     else:
         return False
 
+def genObstacles(num):
+    obs = {}
+    obs["Obstacles"] = {}
+    obs["Obstacles"]["X"] = [512, 459, 725, 420, 328, 420, 512, 604, 778]
+    obs["Obstacles"]["Y"] = [445, 353, 261, 544, 384, 224, 77, 544, 538]
+    obs["Obstacles"]["Z"] = []
+    obs["Obstacles"]["X_size"] = []
+    obs["Obstacles"]["Y_size"] = []
+    obs["Obstacles"]["Z_size"] = []
+    obs["Obstacles"]["Z_angle_deg"] = []
+    obs["Obstacles"]["geometric type"] = []
+    obs["Obstacles"]["slowdown factor"] = []
+    obs["Obstacles"]["visibility"] = []
+    obs["obj"] = []
 
+    for each in range(num):
+        x = obs["Obstacles"]["X"][each]
+        y = obs["Obstacles"]["Y"][each]
+        # while True:
+        #    x = random.randrange(100, 900, 100)
+        #    y = random.randrange(100, 700, 100)
+        #    if x not in obs["Obstacles"]["X"] or y not in obs["Obstacles"]["Y"]:
+        #        break
+        y_size = random.randrange(50, 120)
+        rotation = random.randrange(0, 360, 30)
+        visibility = 4 if random.random() <= 0.20 else 3
+        O = Obstacle((x,y), y_size, -rotation, visibility)
+        obs["obj"].append(O)
+
+        #obs["Obstacles"]["X"].append(x)
+        #obs["Obstacles"]["Y"].append(y)
+        obs["Obstacles"]["Z"].append(5)
+        obs["Obstacles"]["X_size"].append(25.0)
+        obs["Obstacles"]["Y_size"].append(y_size)
+        obs["Obstacles"]["Z_size"].append(10)
+        obs["Obstacles"]["Z_angle_deg"].append(rotation)
+        obs["Obstacles"]["geometric type"].append(1)
+        obs["Obstacles"]["slowdown factor"].append(0.05)
+        obs["Obstacles"]["visibility"].append(visibility)
+
+    return obs
+
+# TODO - Generate Trials
+#           x Generate Ostacles at random
+#           - Restart every minute
+#           x Obstacles length
+#           -
+
+
+# statt s = sekunde gilt s = frame
+# F in N
+# a in m/(s^2)
+# V in m/s
+# m in kg
+# F = m*a
+# a = F/m
+# Ball hat m
+# spieler liefert F
+# ball wird um a beschleunigt
+# V = V+a*frame
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -55,14 +115,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = pos
         self.start_pos = pos
         self.radius = self.rect.width/2
-        self.speed = 0.6
+        self.mass = 5 # 5kg
         self.x, self.y = pos
         self.xv = self.yv = 0
         self.targets = 0
         self.screenrect = pygame.display.get_surface().get_rect()
         self.wait = 0
-        self.tar = 0
-        self.tar_onhold = 0
         self.keys = {}
         self.keys["K_DOWN"] = 0
         self.keys["K_UP"] = 0
@@ -79,8 +137,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.move_ip(round(self.x-tx), round(self.y - ty))
 
         # langsam werden des balles(ausrollen)
-        self.xv = self.xv * 0.90
-        self.yv = self.yv * 0.90
+        self.xv = self.xv * 0.95
+        self.yv = self.yv * 0.95
 
         if self.rect.x < 0:
             self.xv = self.xv * (-1)
@@ -118,9 +176,9 @@ class Player(pygame.sprite.Sprite):
             self.applyForces(0, 3)
 
     # adding forces of client
-    def applyForces(self, x, y):
-        self.xv = self.xv + x * self.speed
-        self.yv = self.yv + y * self.speed
+    def applyForces(self, Fx, Fy):
+        self.xv = self.xv + (Fx / self.mass) * 1 # 1 = Frame, hier die zeiteinheit. Da immer 1 kann weg gelassen werden
+        self.yv = self.yv + Fy / self.mass
 
 
 class Target(pygame.sprite.Sprite):
@@ -134,10 +192,10 @@ class Target(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, pos, rotation):
+    def __init__(self, pos, y_size, rotation, visibility):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([25,68])
-        self.image.fill([255,0,0])
+        self.image = pygame.Surface([25,y_size])
+        self.image.fill([255,0,0] if visibility == 3 else [0,255,0] )
         self.image.set_colorkey([0,0,0])
         self.rect = self.image.get_rect()
         self.angle = math.radians(rotation)
