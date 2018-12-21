@@ -1,8 +1,9 @@
 import pygame
 import sys
 from pygame.locals import *
-from testServer.game import game
-from testServer.game import models
+from game import game, models
+#from testServer.game import game
+#from testServer.game import models
 
 def main():
     pygame.init()
@@ -10,30 +11,31 @@ def main():
     pygame.display.set_caption("Ball-Game")
     Game = game.Game(screen, 1337)
 
-    for pos in ((512, 691), (246, 230), (778, 230), (512, 384)):
-        Game.addTarget(pos)
-
     Game.server.waitForClient()
+    #screen = pygame.display.set_mode((1024, 768), FULLSCREEN)
 
     RUN = True
+    counter = 0
+    import json
     while RUN:
-        print("Build trial")
-        obstacles = models.genObstacles(9)
-        for obt in obstacles["obj"]:
-            Game.addObstacle(obt)
-
-        Game.server.trial_def["Level Data"]["Obstacles"] = obstacles["Obstacles"]
-        Game.server.trial_def["Level Data"]["Nr of Obstacles"] = len(obstacles["obj"])
-        Game.server.send_fr(Game.server.trial_def)
-        Game.server.send_fr(Game.server.frame)
-        RUN = mainLoop(Game)
-        Game.obstacles = pygame.sprite.Group()
+        Game.init()
+        Game.draw(0, 0)
+        pygame.display.flip()
+        pygame.image.save(screen, "../paths/trialPNG(%d).png" % (counter))
+        f = open("../paths/trialFRAME(%d).txt" % (counter),"w")
+        f.write(json.dumps(Game.server.trial_def, indent=4, sort_keys=True))
+        f.close()
+        #RUN = mainLoop(Game)
+        if counter > 10:
+            RUN = False
+        counter += 1
+        Game.reset()
 
 
 def mainLoop(Game):
     print("Running mainloop")
     #pdb.Pdb().set_trace()
-    countermax = 300
+    countermax = 1800
     RUN = True
     while countermax > 0:
         receive = Game.server.receive_fr()

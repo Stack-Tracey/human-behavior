@@ -1,6 +1,8 @@
 import labViewConnector
 import sys
-from client.actor import game
+#from client.actor import game
+sys.path.append('../')
+from actor import game
 
 lab = '172.18.101.69'
 vbx = '192.168.56.101'
@@ -19,7 +21,6 @@ def get_data(stream):
         msg_type = frame["MsgType"]
 
         if msg_type == "Frame":
-            print(msg_type)
             response = game.play(frame)
             stream.send_fr(response)
 

@@ -63,7 +63,7 @@ class GameServer:
         byteA = bytearray()
         while True:
             data = self.clientsocket.recv(1)
-            if data[0] == 10:
+            if data[0] == 10 or data[0] == '\n':
                 break
             else:
                 byteA.append(data[0])

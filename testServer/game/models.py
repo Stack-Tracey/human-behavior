@@ -1,98 +1,17 @@
 import pygame
 import math
-import random
-
 from pygame.locals import *
 
-def load_image(name, colorkey=None):
+def load_image(name):
     try:
         image = pygame.image.load(name)
     except pygame.error:
         print('can`t load image:', name)
         raise SystemExit
     image = image.convert()
-    if colorkey is not None:
-        if colorkey is -1:
-            colorkey = image.get_at((0,0))
-        image.set_colorkey(colorkey, pygame.RLEACCEL)
+    colorkey = image.get_at((0,0))
+    image.set_colorkey(colorkey, pygame.RLEACCEL)
     return image, image.get_rect()
-
-def circRotatedRectCollide(circ, rect):
-    backRotatedCircX = math.cos(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) - math.sin(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centerx
-    backRotatedCircY = math.sin(rect.angle) * (circ.rect.center[0] - rect.rect.centerx) + math.cos(rect.angle) * (circ.rect.center[1] - rect.rect.centery) + rect.rect.centery
-
-    closestX = 0
-    closestY = 0
-
-    if (backRotatedCircX  < rect.oldrect.topleft[0]):
-        closestX = rect.oldrect.topleft[0]
-    elif (backRotatedCircX  > rect.oldrect.topleft[0] + rect.oldrect.width):
-        closestX = rect.oldrect.topleft[0] + rect.oldrect.width
-    else:
-        closestX = backRotatedCircX
-
-    if (backRotatedCircY < rect.oldrect.topleft[1]):
-        closestY = rect.oldrect.topleft[1]
-    elif (backRotatedCircY > rect.oldrect.topleft[1] + rect.oldrect.height):
-        closestY = rect.oldrect.topleft[1] + rect.oldrect.height
-    else:
-        closestY = backRotatedCircY
-
-    distance = math.sqrt(abs(backRotatedCircX - closestX)**2 + abs(backRotatedCircY - closestY)**2)
-
-    if (distance < circ.radius):
-        return True
-    else:
-        return False
-
-def genObstacles(num):
-    obs = {}
-    obs["Obstacles"] = {}
-    obs["Obstacles"]["X"] = [512, 459, 725, 420, 328, 420, 512, 604, 778]
-    obs["Obstacles"]["Y"] = [445, 353, 261, 544, 384, 224, 77, 544, 538]
-    obs["Obstacles"]["Z"] = []
-    obs["Obstacles"]["X_size"] = []
-    obs["Obstacles"]["Y_size"] = []
-    obs["Obstacles"]["Z_size"] = []
-    obs["Obstacles"]["Z_angle_deg"] = []
-    obs["Obstacles"]["geometric type"] = []
-    obs["Obstacles"]["slowdown factor"] = []
-    obs["Obstacles"]["visibility"] = []
-    obs["obj"] = []
-
-    for each in range(num):
-        x = obs["Obstacles"]["X"][each]
-        y = obs["Obstacles"]["Y"][each]
-        # while True:
-        #    x = random.randrange(100, 900, 100)
-        #    y = random.randrange(100, 700, 100)
-        #    if x not in obs["Obstacles"]["X"] or y not in obs["Obstacles"]["Y"]:
-        #        break
-        y_size = random.randrange(50, 120)
-        rotation = random.randrange(0, 360, 30)
-        visibility = 4 if random.random() <= 0.20 else 3
-        O = Obstacle((x,y), y_size, -rotation, visibility)
-        obs["obj"].append(O)
-
-        #obs["Obstacles"]["X"].append(x)
-        #obs["Obstacles"]["Y"].append(y)
-        obs["Obstacles"]["Z"].append(5)
-        obs["Obstacles"]["X_size"].append(25.0)
-        obs["Obstacles"]["Y_size"].append(y_size)
-        obs["Obstacles"]["Z_size"].append(10)
-        obs["Obstacles"]["Z_angle_deg"].append(rotation)
-        obs["Obstacles"]["geometric type"].append(1)
-        obs["Obstacles"]["slowdown factor"].append(0.05)
-        obs["Obstacles"]["visibility"].append(visibility)
-
-    return obs
-
-# TODO - Generate Trials
-#           x Generate Ostacles at random
-#           - Restart every minute
-#           x Obstacles length
-#           -
-
 
 # statt s = sekunde gilt s = frame
 # F in N
@@ -108,7 +27,7 @@ def genObstacles(num):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect  = load_image("game/img/ball.png", -1)
+        self.image, self.rect  = load_image("game/img/ball.png")
         self.image = pygame.transform.scale(self.image, (30, 30))
 
         self.rect = self.image.get_rect()
@@ -184,10 +103,11 @@ class Player(pygame.sprite.Sprite):
 class Target(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect  = load_image("game/img/target.png", -1)
+        self.image, self.rect  = load_image("game/img/target.png")
         x, y = pos
         self.image = pygame.transform.scale(self.image, (70,70))
         self.rect = self.image.get_rect()
+        self.radius = 35
         #self.rect.center = (1024 - x, 768 - y)
         self.rect.center = (x, y)
 

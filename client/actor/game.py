@@ -1,6 +1,11 @@
 from client.actor import trialState
 from client.actor import search
-from scipy import spatial
+#from actor import trialState
+#from actor import search
+
+
+
+#from scipy import spatial
 
 class Game:
     def __init__(self, frame):
@@ -111,13 +116,10 @@ class Game:
         trial_elapsed = frame_data['Trial Elapsed [ms]']
         ode_processed_until = frame_data['ODE processed until [ms]']
         dt = frame_data['dt [ms]']
-        print("position player 1", p1_x, p1_y)
-        print("position player 2", p2_x, p2_y)
 
         x, y = self.search.go_for_target((p1_x, p1_y), (p1_f_x, p1_f_y),self.trial.ball_radius)
 
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
-
 
