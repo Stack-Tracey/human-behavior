@@ -1,0 +1,195 @@
+{
+    "Current Trial Nr.": 1,
+    "Level Data": {
+        "AI 1 Length of Memory": 18,
+        "AI Type": 0,
+        "Ball": {
+            "Radius": 15,
+            "X": 512,
+            "Y": 384,
+            "Z": 15
+        },
+        "Blink_Wavelength_OWG": 255,
+        "Blink_Wavelength_Screen": 40,
+        "Max Force": 0.0005000000237487257,
+        "Nr of Obstacles": 9,
+        "Nr of Targets": 4,
+        "Nr_of_Frames_to_Show_Fixation_Cross": 120,
+        "Nr_of_Frames_to_Skip_at_Start_of_Trial": 120,
+        "Obstacles": {
+            "X": [
+                512,
+                459,
+                725,
+                420,
+                328,
+                420,
+                512,
+                604,
+                778
+            ],
+            "X_size": [
+                25.6,
+                25.6,
+                25.6,
+                25.6,
+                25.6,
+                25.6,
+                25.6,
+                25.6,
+                25.6
+            ],
+            "Y": [
+                445,
+                353,
+                261,
+                544,
+                384,
+                224,
+                77,
+                544,
+                538
+            ],
+            "Y_size": [
+                100,
+                52,
+                96,
+                87,
+                61,
+                113,
+                62,
+                61,
+                91
+            ],
+            "Z": [
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5
+            ],
+            "Z_angle_deg": [
+                90,
+                30,
+                150,
+                225,
+                105,
+                135,
+                180,
+                120,
+                255
+            ],
+            "Z_size": [
+                10,
+                10,
+                10,
+                10,
+                10,
+                10,
+                10,
+                10,
+                10
+            ],
+            "geometric type": [
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "slowdown factor": [
+                0.05,
+                0.05,
+                0.05,
+                0.05,
+                0.05,
+                0.05,
+                0.05,
+                0.05,
+                0.05
+            ],
+            "visibility": [
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                4,
+                3
+            ]
+        },
+        "Questionair Text": "I didnt define a cool Questionair Text .. :(",
+        "Replay Angle Rotation Ball Player 1": [],
+        "Replay Angle Rotation Ball Player 2": [],
+        "Replay File": "",
+        "Replay Trigger States": [],
+        "Replay X Axis Rotation Ball Player 1": [],
+        "Replay X Axis Rotation Ball Player 2": [],
+        "Replay X Position Ball Player 1": [],
+        "Replay X Position Ball Player 2": [],
+        "Replay Y Axis Rotation Ball Player 1": [],
+        "Replay Y Axis Rotation Ball Player 2": [],
+        "Replay Y Position Ball Player 1": [],
+        "Replay Y Position Ball Player 2": [],
+        "Replay Z Axis Rotation Ball Player 1": [],
+        "Replay Z Axis Rotation Ball Player 2": [],
+        "Replay Z Position Ball Player 1": [],
+        "Replay Z Position Ball Player 2": [],
+        "Screen_Flicker_Target_Radius": 20,
+        "ShowBar": false,
+        "Show_Fixation_Cross": true,
+        "Targets": {
+            "Radius": [
+                35,
+                35,
+                35,
+                35
+            ],
+            "X": [
+                512,
+                246,
+                778,
+                512
+            ],
+            "Y": [
+                691,
+                230,
+                230,
+                384
+            ],
+            "Z": [
+                5,
+                5,
+                5,
+                5
+            ],
+            "Z_size": [
+                10,
+                10,
+                10,
+                10
+            ]
+        },
+        "Trial Duration [ms]": 60000,
+        "Trial Type": 1,
+        "Visibility per Frame - Ball- Player 1": [],
+        "Visibility per Frame - Ball- Player 2": [],
+        "Visibility per Frame - Obstacles - Player 1": [],
+        "Visibility per Frame - Obstacles - Player 2": [],
+        "Visibility per Frame - Obstacles 2 - Player 1": [],
+        "Visibility per Frame - Obstacles 2 - Player 2": [],
+        "Visibility per Frame - Targets - Player 1": [],
+        "Visibility per Frame - Targets - Player 2": []
+    },
+    "MsgType": "Trial Definition"
+}
