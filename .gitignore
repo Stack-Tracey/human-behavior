@@ -3,3 +3,4 @@
 *.xml
 venv
 lab.py
+*.pyc

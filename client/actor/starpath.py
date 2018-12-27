@@ -2,9 +2,6 @@ import itertools
 import math
 from heapq import *
 
-"""
-mir faellt grade nicht weiter ein, was ich noch von eimem Pfad wollen koennte.
-"""
 
 #[Point(512,691), Point(511,690), Point(511,521), Point(462,472), Point(462,471), Point(462,470), Point(462,469), Point(462,468), Point(462,467), Point(462,466), Point(462,465), Point(462,464), Point(462,463), Point(462,462), Point(462,461), Point(462,460), Point(462,459), Point(462,458), Point(462,457), Point(462,456), Point(462,455), Point(462,454), Point(462,453), Point(462,452), Point(462,451), Point(462,450), Point(462,449), Point(462,448), Point(462,447), Point(462,446), Point(462,445), Point(462,444), Point(462,443), Point(462,442), Point(462,441), Point(462,440), Point(462,439), Point(462,438), Point(462,437), Point(462,436), Point(462,435), Point(462,434), Point(462,433), Point(462,432), Point(462,431), Point(462,430), Point(462,429), Point(462,428), Point(462,427), Point(462,426), Point(462,425), Point(462,424), Point(462,423), Point(462,422), Point(462,421), Point(462,420), Point(462,419), Point(462,418), Point(463,417), Point(464,417), Point(465,417), Point(466,417), Point(467,417), Point(468,417), Point(469,417), Point(470,417), Point(471,417), Point(472,417), Point(473,417), Point(474,417), Point(475,417), Point(476,417), Point(477,417), Point(478,417), Point(479,417), Point(480,417), Point(481,417), Point(482,417), Point(483,417), Point(484,417), Point(485,417), Point(486,417), Point(487,417), Point(488,417), Point(489,417), Point(490,417), Point(491,417), Point(492,417), Point(493,417), Point(494,417), Point(495,417), Point(496,417), Point(497,417), Point(498,417), Point(499,417), Point(500,417), Point(501,417), Point(502,417), Point(503,417), Point(504,417), Point(505,417), Point(506,417), Point(507,417), Point(508,417), Point(509,417), Point(510,417), Point(511,417), Point(512,416), Point(512,415), Point(512,414), Point(512,413), Point(512,412), Point(512,411), Point(512,410), Point(512,409), Point(512,408), Point(512,407), Point(512,406), Point(512,405), Point(512,404), Point(512,403), Point(512,402), Point(512,401), Point(512,400), Point(512,399), Point(512,398), Point(512,397), Point(512,396), Point(512,395), Point(512,394), Point(512,393), Point(512,392), Point(512,391), Point(512,390), Point(512,389), Point(512,388), Point(512,387), Point(512,386), Point(512,385)]
 #[Point(512,691), Point(511,690), Point(511,521), Point(462,472), Point(462,418), Point(463,417), Point(511,417), Point(512,416), Point(512,385)]
@@ -92,7 +89,7 @@ def astern(array, start, goal):
 
     return False
 
-# linear interpolation
+# linear interpolation for path smoothing
 def walkable(array, pointA, pointB):
     #def lipo(start, end, perc):
     #    return start + perc * (end - start)
@@ -107,6 +104,7 @@ def walkable(array, pointA, pointB):
             return False
     return True
 
+# array of tupels(points), calculates A* for target combinations
 class StarPath:
     def __init__(self, targets, field=None):
         self.field = field
@@ -121,7 +119,7 @@ class StarPath:
         combinations = itertools.combinations(self.targets, 2)
         for combination in combinations:
             start, target = combination
-            self.paths.append(Path(astern(self.field, start, target)))
+            self.paths.append(f(astern(self.field, start, target)))
 
     def simplifyPaths(self):
         for path in self.paths:
@@ -191,7 +189,7 @@ class StarPath:
                 l.append(path.getLastPoint(self))
         return l
 
-
+# array of points
 class Path:
     def __init__(self, points):
         def toPoints(p):

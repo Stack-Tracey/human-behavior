@@ -6,29 +6,32 @@ from game import game, models
 #from testServer.game import models
 
 def main():
+    def generateImages():
+        import json
+        for counter in range(12):
+            Game.init()
+            Game.draw(0, 0)
+            pygame.display.flip()
+            pygame.image.save(screen, "../paths/trialPNG(%d).png" % (counter))
+            f = open("../paths/trialFRAME(%d).txt" % (counter),"w")
+            f.write(json.dumps(Game.server.trial_def, indent=4, sort_keys=True))
+            f.close()
+            Game.reset()
+
     pygame.init()
     screen = pygame.display.set_mode((1024, 768))
     pygame.display.set_caption("Ball-Game")
     Game = game.Game(screen, 1337)
 
     Game.server.waitForClient()
-    #screen = pygame.display.set_mode((1024, 768), FULLSCREEN)
+    screen = pygame.display.set_mode((1024, 768), FULLSCREEN)
 
     RUN = True
-    counter = 0
-    import json
+    #RUN = False
+    #generateImages()
     while RUN:
         Game.init()
-        Game.draw(0, 0)
-        pygame.display.flip()
-        pygame.image.save(screen, "../paths/trialPNG(%d).png" % (counter))
-        f = open("../paths/trialFRAME(%d).txt" % (counter),"w")
-        f.write(json.dumps(Game.server.trial_def, indent=4, sort_keys=True))
-        f.close()
-        #RUN = mainLoop(Game)
-        if counter > 10:
-            RUN = False
-        counter += 1
+        RUN = mainLoop(Game)
         Game.reset()
 
 
@@ -36,7 +39,6 @@ def mainLoop(Game):
     print("Running mainloop")
     #pdb.Pdb().set_trace()
     countermax = 1800
-    RUN = True
     while countermax > 0:
         receive = Game.server.receive_fr()
         p1_fx = receive["Frame Data"]["X"] #0.334566544444
