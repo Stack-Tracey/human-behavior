@@ -75,7 +75,7 @@ class Game():
             # y_size = 68.266
             rotation = random.randrange(0, 360, 15)
             # rotation = obs["Obstacles"]["Z_angle_deg"][each]
-            visibility = 4 if random.random() <= 0.20 else 3
+            visibility = 4 if random.random() <= 0.3 else 3 # TODO: change back to 0.2
             # visibility = obs["Obstacles"]["visibility"][each]
 
             O = Obstacle((x, y), y_size, -rotation, visibility)
@@ -153,8 +153,7 @@ class Game():
             if (self.circRotatedRectCollide(self.player, obstacle)):
                 self.player.slowdown()
 
-        # self.all_sprites.update(events)
-        self.player.update(events)
+        self.player.update()
 
     def draw(self, afx, afy):
         fps = self.font.render(str(int(self.clock.get_fps())), True, pygame.Color('black'))

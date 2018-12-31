@@ -122,4 +122,3 @@ class Game:
         response = {"MsgType": "Receive Frame", "Frame Data": {"X": x, "Y": y}}
 
         return response
-

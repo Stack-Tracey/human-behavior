@@ -44,16 +44,16 @@ class Nodes:
                     x_size = round(radius / 2)
                     y_size = round(radius / 2)
                     z_size = round(z_size / 2)
-                    marker += 2
+                    marker = 10
                 else:
                     x, y, z, x_size, y_size, z_size, z_angle_deg, slowdown_fac, visibility, geometric_type = obj
 
                     x_size = round(x_size / 2)
                     y_size = round(y_size / 2)
                     z_size = round(z_size / 2)
-                    marker += 1
+                    marker = visibility
                 #calculates the size of given object
-                enlarge = self.ball_radius #to avoid hitting obstacles
+                enlarge = self.ball_radius+10 #to avoid hitting obstacles
 
                 l = x - (x_size + enlarge)
                 r = x + x_size + 1 + enlarge
@@ -127,12 +127,12 @@ class Nodes:
                     self.field_filled[int(x), int(y)] = marker
                     i = i + 1
 
-                bbox = get_bounding_box(field2)
-                nodes.append(bbox)
+                #bbox = get_bounding_box(field2)
+                nodes.append(field2)
+                #nodes.append(bbox)
             return nodes
 
         #self.tar_nodes = get_nodes(self.targets)
         self.obs_nodes = get_nodes(self.obstacles)
-
 
 

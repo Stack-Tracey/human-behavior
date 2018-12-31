@@ -14,8 +14,9 @@ def test():
     print("Peter: ",peter)
     print("Anton: ",anton)
     star = StarPath([(0,0),(10,10),(10,0),(5,5)])
-    star.paths.append(anton)
-    star.paths.append(peter)
+
+    #star.paths.append(anton)
+    #star.paths.append(peter)
     star.field = np.zeros([11, 11], dtype=object)
     star.field[[5],[5]] = 1
     PointA = Point(None, (0,0))
@@ -25,14 +26,15 @@ def test():
     print(walkable(star.field, PointA, PointC))
     print(walkable(star.field, PointB, PointA))
 
-    import pdb
-    pdb.Pdb().set_trace()
+    #import pdb
+    #pdb.Pdb().set_trace()
+    star.calcPaths()
     nxt_mv = peter.points[0]
     ball_pos = Point(None, (1,3))
     nxt_mv = nxt_mv.next()
     while nxt_mv is not None and ball_pos.dist(peter.getLastPoint()) <= nxt_mv.dist(peter.getLastPoint()):
         nxt_mv = nxt_mv.next()
-    print("Shortest Path: ",star.getShortestPath())
+    #print("Shortest Path: ",star.getShortestPath())
     import pdb
     pdb.Pdb().set_trace()
     peter.simplifyPath()
@@ -43,7 +45,7 @@ def astern(array, start, goal):
     def heuristic(a, b):
         return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
 
-    print("calculated A*")
+    collide = False
     open_heap = []
     came_from = {}
     close_set = set()
@@ -61,7 +63,7 @@ def astern(array, start, goal):
             while current in came_from:
                 data.append(current)
                 current = came_from[current]
-            return data
+            return (data, collide)
 
         close_set.add(current)
         for i, j in neighbors:
@@ -69,7 +71,9 @@ def astern(array, start, goal):
             tent_g_score = gscore[current] + heuristic(current, neighbor)
             if 0 <= neighbor[0] < array.shape[0]:
                 if 0 <= neighbor[1] < array.shape[1]:
-                    if array[neighbor[0]][neighbor[1]] == 1:
+                    if array[neighbor[0]][neighbor[1]] == 4: # we hit an unvisible obs
+                        collide = True
+                    if array[neighbor[0]][neighbor[1]] == 3:
                         continue
                 else:
                     # array bound y walls
@@ -87,10 +91,10 @@ def astern(array, start, goal):
                 hscore[neighbor] = tent_g_score + heuristic(neighbor, goal)
                 heappush(open_heap, (hscore[neighbor], neighbor))
 
-    return False
+    return False, False
 
 # linear interpolation for path smoothing
-def walkable(array, pointA, pointB):
+def walkable(array, pointA, pointB, obstype=3):
     #def lipo(start, end, perc):
     #    return start + perc * (end - start)
     dPoint = pointB - pointA
@@ -100,7 +104,7 @@ def walkable(array, pointA, pointB):
         y = (i/max * dy)
         x = (i/max * dx)
         x, y = (pointA + Point(None, (x,y))).getXY()
-        if array[[x], [y]]:
+        if array[[x], [y]] == obstype:
             return False
     return True
 
@@ -108,42 +112,56 @@ def walkable(array, pointA, pointB):
 class StarPath:
     def __init__(self, targets, field=None):
         self.field = field
-        self.targets = targets
-        self.paths = []
+        self.targets = self.buildTargets(targets)
         if field is not None:
             self.calcPaths()
-            self.simplifyPaths()
-            self.smoothPaths()
+
+    # turns (x,y) into Target
+    def buildTargets(self, targets):
+        counter = 0
+        d = []
+        for t in targets:
+            name = "%d" % (counter)
+            d.append(Target(name, Point(None, t)))
+            counter += 1
+        return d
 
     def calcPaths(self):
+        print("Calculating pathes, this may take a while...", end='')
         combinations = itertools.combinations(self.targets, 2)
         for combination in combinations:
-            start, target = combination
-            self.paths.append(f(astern(self.field, start, target)))
-
-    def simplifyPaths(self):
-        for path in self.paths:
-            path.simplifyPath()
-
-    def smoothPaths(self):
-        for path in self.paths:
-            path.smoothifyPath(self.field)
+            start, end = combination
+            p, collide = astern(self.field, start.pos.getXY(), end.pos.getXY()) # list of tuples (x,y)
+            # check if p is a path not False -> No walk possible
+            if isinstance(p, bool):
+                continue
+            start.journeys[end] = Journey(list(reversed(p)), self.field, collide)
+            end.journeys[start] = Journey(p, self.field, collide)
+        print("Done!")
 
     # this function returns the shortest path
-    def getShortestPath(self):
-        min = self.paths[0]
-        for each in  self.paths:
-            if each.getLength() < min.getLength():
-                min = each
+    def getShortestJourney(self):
+        min = self.targets[0].journeys[self.targets[1]]
+        for each in self.targets:
+            for teah in each.journeys.values():
+                if teah.getLength() < min.getLength():
+                    min = teah
         return min
 
-    def getLongestPath(self):
-        max = self.paths[0]
-        for each in self.paths:
-            if each.getLength() > max.getLength():
-                max = each
+    def getLongestJourney(self):
+        max = self.targets['0'].journeys[self.targets['1']]
+        for each in  self.targets.values():
+            for teah in each.values():
+                if teah.getLength() > min.getLength():
+                    max = teah
         return max
 
+    def getNearTarget(self, point):
+        for target in self.targets:
+            if point.inRange(35 + 15, target.pos):
+                return target
+        return None
+"""
     def getNearPoint(self, pos):
         min = self.paths[0].getPoints()[0]
         mindist = pos.dist(min)
@@ -179,15 +197,65 @@ class StarPath:
         l = []
         for path in self.paths:
             if path.getFirstPoint().inRange(range, start):
-                l.append(path.getFirstPoint(self))
+                l.append(path)
+        return l
+
+    def findSmoothPathWithStart(self, start, range=1):
+        l = []
+        for path in self.paths:
+            try:
+                if path.smoothPath.getFirstPoint().inRange(range, start):
+                    l.append(path.smoothPath)
+            except:
+                pass
         return l
 
     def findPathWithEnd(self, end, range=1):
         l = []
         for path in self.paths:
             if path.getLastPoint().inRange(range, end):
-                l.append(path.getLastPoint(self))
+                l.append(path)
         return l
+
+    def findSmoothPathWithEnd(self, end, range=1):
+        l = []
+        for path in self.paths:
+            try:
+                if path.smoothPath.getLastPoint().inRange(range, end):
+                    l.append(path.smoothPath)
+            except:
+                pass
+        return l
+"""
+
+class Target:
+    def __init__(self, name, pos):
+        self.name = name
+        self.pos = pos
+        self.journeys = {}
+
+    def __str__(self):
+        return "Target(%s)" % self.name
+
+    def __repr__(self):
+        return self.__str__()
+
+
+class Journey:
+    def __init__(self, points, field, collide):
+        self.path = Path(points)
+        self.simple = self.path.getSimplePath()
+        self.smooth = self.simple.getSmoothPath(field)
+        self.collide = collide # is an unvisible obs in the way
+
+    def getLength(self):
+        return self.smooth.getLength()
+
+    def __str__(self):
+        return "Journey(%s -> %s)" % (self.path.getFirstPoint(), self.path.getLastPoint())
+
+    def __repr__(self):
+        return self.__str__()
 
 # array of points
 class Path:
@@ -201,8 +269,6 @@ class Path:
                     a.append(Point(self, i))
             return a
         self.points = toPoints(points)
-        self.simplePath = None
-        self.smoothPath = None
 
     def getLength(self):
         return len(self.points)
@@ -211,7 +277,7 @@ class Path:
     def getPoints(self):
         return self.points
 
-    def simplifyPath(self):
+    def getSimplePath(self):
         lastdiff = (0,0)
         simplePoints = []
         for point in range(len(self.points)-1):
@@ -222,15 +288,15 @@ class Path:
                 simplePoints.append(start.getXY())
             lastdiff = diff
         simplePoints.append(self.points[len(self.points)-1].getXY())
-        self.simplePath = Path(simplePoints)
+        return Path(simplePoints)
 
     # use only after simplifyPath has been called
-    def smoothifyPath(self, field):
+    def getSmoothPath(self, field):
         smoothPoints = []
         point = 0
-        smoothPoints.append(self.simplePath.points[0].getXY())
-        while point < len(self.simplePath.points)-1:
-            start = self.simplePath.points[point]
+        smoothPoints.append(self.points[0].getXY())
+        while point < len(self.points)-1:
+            start = self.points[point]
             p = start.next()
             while p is not None:
                 if walkable(field, start, p):
@@ -239,17 +305,14 @@ class Path:
                 else:
                     p = None
             smoothPoints.append(last_walkable.getXY())
-            point = self.simplePath.points.index(last_walkable)
-        self.smoothPath = Path(smoothPoints)
-
-    def getSimplePath(self):
-        return self.simplePath
+            point = self.points.index(last_walkable)
+        return Path(smoothPoints)
 
     def getFirstPoint(self):
         return self.points[0]
 
     def getLastPoint(self):
-        return self.points[len(self.points)-1]
+        return self.points[-1]
 
     def __str__(self):
         return "Path(%d)" % self.getLength()
@@ -296,13 +359,19 @@ class Point:
     def norm(self):
         if self.pos == (0, 0):
             return 0, 0
-        x_r, y_r = self.pos
-        m = math.sqrt(pow(x_r, 2) + pow(y_r, 2))
 
+        m = self.abs()
+        x_r, y_r = self.pos
         x_rn = (1 / m) * x_r
         y_rn = (1 / m) * y_r
 
         return x_rn, y_rn
+
+    def abs(self):
+        if self.pos == (0, 0):
+            return 0
+        x_r, y_r = self.pos
+        return math.sqrt(pow(x_r, 2) + pow(y_r, 2))
 
     def __sub__(self, other):
         x, y = other.getXY()

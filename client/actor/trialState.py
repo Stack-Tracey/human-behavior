@@ -52,12 +52,12 @@ class TrialState:
                 visible_fac_val = visibility[i]
                 geometric_type_val = geometric_type[i]
 
-                if visible_fac_val == 1 or visible_fac_val == 3:
+                # changed 1 to 4 ???
+                if visible_fac_val == 4 or visible_fac_val == 3:
                     obs = [x_val, y_val, z_val, x_size_val, y_size_val, z_size_val, angle_deg_val, slowdown_fac_val, visible_fac_val, geometric_type_val]
                     obstacles.append(obs)
 
                 i = i + 1
-            print("obstacles, should be less than 9 elements: ", obstacles)
             return obstacles
 
         #returns the positions of targets.
@@ -89,11 +89,9 @@ class TrialState:
                                        self.obs_visibility, self.obs_geometric_type)
         self.targets = get_targets(tar_x, tar_y, tar_z, tar_z_size, tar_radius, nr_of_targets)
         self.nodes = nodes.Nodes(self.obstacles, self.targets, self.ball, self.ball_radius)
-        print("reached self.nodes")
         #self.tar_nodes = self.nodes.tar_nodes
         self.obs_nodes = self.nodes.obstacles
         self.field_filled = self.nodes.field_filled
-
 
 
 

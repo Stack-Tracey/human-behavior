@@ -1,10 +1,11 @@
 import pygame
 import math
+import os
 from pygame.locals import *
 
 def load_image(name):
     try:
-        image = pygame.image.load(name)
+        image = pygame.image.load(os.path.join(os.path.dirname(__file__), name))
     except pygame.error:
         print('can`t load image:', name)
         raise SystemExit
@@ -27,7 +28,7 @@ def load_image(name):
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect  = load_image("game/img/ball.png")
+        self.image, self.rect  = load_image("img/ball.png")
         self.image = pygame.transform.scale(self.image, (30, 30))
 
         self.rect = self.image.get_rect()
@@ -49,7 +50,7 @@ class Player(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect)
 
-    def update(self, events):
+    def update(self):
         self.x += self.xv
         self.y += self.yv
         tx, ty = self.rect.center
@@ -103,7 +104,7 @@ class Player(pygame.sprite.Sprite):
 class Target(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect  = load_image("game/img/target.png")
+        self.image, self.rect  = load_image("img/target.png")
         x, y = pos
         self.image = pygame.transform.scale(self.image, (70,70))
         self.rect = self.image.get_rect()
